@@ -11,7 +11,7 @@ const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_
 // ============================================================
 let playerName = '';
 let score = 0;
-let lives = 3;
+let lives = 1;
 let streak = 0;
 let questionCount = 0;
 let currentFish = null;
@@ -72,6 +72,17 @@ function setupEventListeners() {
   });
 
   document.getElementById('btn-show-gallery-splash').addEventListener('click', () => {
+    const hasPlayed = localStorage.getItem('fiskequiz_hasplayed');
+    if (!hasPlayed) {
+      const nameInput = document.getElementById('player-name').value.trim();
+      if (!nameInput) {
+        alert('Skriv inn navnet ditt og spill minst én runde for å låse opp galleriet!');
+        document.getElementById('player-name').focus();
+        return;
+      }
+      alert('Spill minst én runde for å låse opp galleriet!');
+      return;
+    }
     renderGallery();
     showScreen('screen-gallery');
   });
@@ -111,7 +122,7 @@ function startGame() {
   }
   playerName = nameInput;
   score = 0;
-  lives = 3;
+  lives = 1;
   streak = 0;
   questionCount = 0;
   totalCorrect = 0;
@@ -236,11 +247,9 @@ function selectAnswer(fishId, btn) {
 
   if (correct) {
     btn.classList.add('correct');
-    const timeBonus = Math.floor(timeLeft * 3);
-    const streakBonus = streak * 20;
-    const points = 50 + timeBonus + streakBonus;
+    const points = 1;
     score += points;
-    streak++;
+    streak = 0;
     totalCorrect++;
 
     // Always update the gallery image to the one shown in quiz
@@ -290,12 +299,7 @@ function updateHUD() {
   document.getElementById('lives-display').innerHTML = livesHTML;
 
   const streakEl = document.getElementById('streak-display');
-  if (streak >= 2) {
-    streakEl.style.opacity = '1';
-    document.getElementById('streak-value').textContent = streak;
-  } else {
-    streakEl.style.opacity = '0';
-  }
+  streakEl.style.opacity = '0';
 }
 
 // ============================================================
@@ -343,7 +347,7 @@ async function endGame() {
   const mins = Math.floor(elapsed / 60);
   const secs = elapsed % 60;
 
-  document.getElementById('final-score').textContent = score.toLocaleString('no');
+  document.getElementById('final-score').textContent = score;
   document.getElementById('final-stats').innerHTML = `
     <div class="stat-row"><span>Riktige svar</span><strong>${totalCorrect} / ${questionCount}</strong></div>
     <div class="stat-row"><span>Tid brukt</span><strong>${mins}m ${secs}s</strong></div>
@@ -351,6 +355,7 @@ async function endGame() {
     <div class="stat-row"><span>Galleri totalt</span><strong>${allDiscovered.size} / 31</strong></div>
   `;
 
+  localStorage.setItem('fiskequiz_hasplayed', '1');
   showScreen('screen-gameover');
 
   // Save to Supabase

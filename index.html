@@ -16,28 +16,22 @@
   <div class="splash-content">
     <div class="logo-mark">🐟</div>
     <h1 class="logo-title">Fiskequiz</h1>
-    <p class="logo-sub">Kjenner du norske fiskearter?</p>
+    <p class="logo-sub">Norske fiskearter: Hvor mange kan du navnet på?</p>
     <div class="name-input-wrap">
       <input type="text" id="player-name" placeholder="Skriv inn navnet ditt" maxlength="20" autocomplete="off" />
     </div>
     <button class="btn-primary" id="btn-start-game">Start Quiz</button>
     <button class="btn-ghost" id="btn-show-gallery-splash">🗂 Galleri</button>
-    <button class="btn-ghost" id="btn-show-leaderboard-splash">🏆 Leaderboard</button>
+    <button class="btn-ghost" id="btn-show-leaderboard-splash">🏆 Ledertavle</button>
   </div>
 </div>
 
 <!-- QUIZ SCREEN -->
 <div id="screen-quiz" class="screen">
   <div class="quiz-header">
-    <div class="lives-display" id="lives-display">
-      <span class="heart">❤️</span><span class="heart">❤️</span><span class="heart">❤️</span>
-    </div>
     <div class="score-display">
       <span id="score-value">0</span>
-      <span class="score-label">poeng</span>
-    </div>
-    <div class="streak-display" id="streak-display" style="opacity:0">
-      🔥 <span id="streak-value">0</span>
+      <span class="score-label">riktige</span>
     </div>
   </div>
 
@@ -90,7 +84,7 @@
     </div>
     <div class="final-stats" id="final-stats"></div>
     <button class="btn-primary" id="btn-play-again">Spill igjen</button>
-    <button class="btn-ghost" id="btn-show-leaderboard-go">🏆 Se leaderboard</button>
+    <button class="btn-ghost" id="btn-show-leaderboard-go">🏆 Se ledertavle</button>
     <button class="btn-ghost" id="btn-show-gallery-go">🗂 Mitt galleri</button>
   </div>
 </div>
@@ -127,12 +121,9 @@
 <div id="screen-leaderboard" class="screen">
   <div class="screen-header">
     <button class="btn-back" id="btn-back-leaderboard">←</button>
-    <h2>Leaderboard</h2>
+    <h2>Ledertavle</h2>
   </div>
-  <div class="leaderboard-tabs">
-    <button class="tab active" id="tab-global" onclick="showTab('global')">Globalt</button>
-    <button class="tab" id="tab-personal" onclick="showTab('personal')">Mine scores</button>
-  </div>
+
   <div id="leaderboard-list" class="leaderboard-list"></div>
 </div>
 
