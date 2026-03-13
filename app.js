@@ -146,6 +146,44 @@ function startGame() {
 // ============================================================
 // QUESTION LOGIC
 // ============================================================
+// ============================================================
+// VISUAL SIMILARITY GROUPS FOR ANSWER OPTIONS
+// ============================================================
+const VISUAL_GROUPS = [
+  ['torsk', 'hyse', 'sei', 'lyr', 'hvitting', 'lysing', 'brosme', 'lange'],
+  ['atlantisk_laks', 'orret', 'roye', 'harr', 'sik'],
+  ['rodspette', 'kveite'],
+  ['sild', 'brisling', 'makrell', 'tobis', 'oyepal'],
+  ['abbor', 'gjors', 'gjedde', 'mort'],
+  ['al', 'steinbit'],
+  ['breiflabb', 'piggskate', 'smaflekket_rodhai', 'piggha'],
+  ['uer', 'oyepal'],
+];
+
+function getGroupFor(fishId) {
+  return VISUAL_GROUPS.find(g => g.includes(fishId)) || null;
+}
+
+function getWrongOptions(correctFish, count) {
+  const group = getGroupFor(correctFish.id);
+  const candidates = [];
+
+  // 70% chance: pick from same group first
+  if (group && Math.random() < 0.7) {
+    const groupFish = FISH_DATA.filter(f => f.id !== correctFish.id && group.includes(f.id));
+    candidates.push(...groupFish.sort(() => Math.random() - 0.5));
+  }
+
+  // Fill remaining slots from the rest of the list
+  if (candidates.length < count) {
+    const usedIds = new Set([correctFish.id, ...candidates.map(f => f.id)]);
+    const rest = FISH_DATA.filter(f => !usedIds.has(f.id)).sort(() => Math.random() - 0.5);
+    candidates.push(...rest);
+  }
+
+  return candidates.slice(0, count);
+}
+
 function loadQuestion() {
   if (lives <= 0) { endGame(); return; }
 
@@ -187,8 +225,8 @@ function loadQuestion() {
   };
   img.src = currentImageFile;
 
-  // Generate 4 options (1 correct + 3 random wrong)
-  const wrong = shuffled.slice(1, 4);
+  // Generate 4 options (1 correct + 3 wrong, biased toward visually similar fish)
+  const wrong = getWrongOptions(currentFish, 3);
   const options = [currentFish, ...wrong].sort(() => Math.random() - 0.5);
 
   const grid = document.getElementById('options-grid');
