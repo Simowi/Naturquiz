@@ -363,7 +363,7 @@ async function loadLeaderboard() {
 async function loadGlobalLeaderboard() {
   const list = document.getElementById('leaderboard-list');
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('leaderboard')
       .select('*')
       .order('score', { ascending: false })
