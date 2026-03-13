@@ -395,6 +395,17 @@ function showFeedback(correct, fishId, isTimeout = false) {
       rtEl.style.display = 'none';
     }
   }
+  const rtEl = document.getElementById('feedback-rarity');
+  if (rtEl) {
+    if (correct) {
+      const rt = getRarityTier(fish);
+      rtEl.textContent = rt.label;
+      rtEl.className = 'rarity-badge rarity-tier-' + rt.tier;
+      rtEl.style.display = 'inline-block';
+    } else {
+      rtEl.style.display = 'none';
+    }
+  }
   document.getElementById('feedback-type').textContent = fish.type || '';
   document.getElementById('feedback-name-en').textContent = fish.nameEn;
   document.getElementById('feedback-name-la').textContent = fish.nameLa;
@@ -537,14 +548,14 @@ function renderGallery() {
     const rt = getRarityTier(fish);
     const discovered = allDiscovered.has(fish.id);
     return `
-      <div class="gallery-card ${discovered ? 'discovered' : 'undiscovered'}" 
+      <div class="gallery-card ${discovered ? 'discovered' : 'undiscovered'} rarity-card-${rt.tier}" 
            onclick="${discovered ? `openFishModal('${fish.id}')` : ''}">
         <div class="gallery-card-inner">
           ${discovered
             ? `<img src="images/${fish.folder}_${discoveredImages[fish.id] || 1}.jpg" alt="${fish.nameNo}" loading="lazy" />`
             : `<div class="undiscovered-icon">?</div>`
           }
-          <div class="gallery-card-name">${discovered ? fish.nameNo : '???'}</div>
+          <div class="gallery-card-name">${discovered ? fish.nameNo : '???'}${discovered ? '<span class="rarity-badge rarity-tier-' + rt.tier + '">' + rt.label + '</span>' : ''}</div>
         </div>
       </div>
     `;
