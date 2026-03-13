@@ -278,7 +278,7 @@ function timeOut() {
   loseLife();
   streak = 0;
   updateHUD();
-  showFeedback(false, null);
+  showFeedback(false, null, true);
 }
 
 // ============================================================
@@ -348,13 +348,13 @@ function updateHUD() {
 // ============================================================
 // FEEDBACK SCREEN
 // ============================================================
-function showFeedback(correct, fishId) {
+function showFeedback(correct, fishId, isTimeout = false) {
   const fish = currentFish;
 
-  document.getElementById('feedback-icon').textContent = correct ? '✅' : '❌';
+  document.getElementById('feedback-icon').textContent = correct ? '✅' : (isTimeout ? '⏱' : '❌');
   document.getElementById('feedback-title').textContent = correct
-    ? (streak > 1 ? `🔥 ${streak}x streak! +${100 + Math.floor(timeLeft * 10) + (streak - 1) * 50} poeng` : 'Riktig!')
-    : 'Beklager – det var feil!';
+    ? 'Riktig!'
+    : (isTimeout ? 'Tiden gikk ut!' : 'Beklager – det var feil!');
 
   // Fish card
   document.getElementById('feedback-fish-img').src = currentImageFile;

@@ -282,17 +282,15 @@ html, body {
 .fish-image-wrap {
   position: relative;
   width: 100%;
-  flex: 1;
-  min-height: 220px;
-  max-height: 320px;
-  overflow: hidden;
   background: #e8e8ea;
+  overflow: hidden;
 }
 
 #fish-image {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto;
+  max-height: 38vh;
+  object-fit: contain;
   display: block;
 }
 
@@ -428,8 +426,9 @@ html, body {
 
 .fish-card-reveal img {
   width: 100%;
-  height: 200px;
-  object-fit: cover;
+  height: auto;
+  max-height: 36vh;
+  object-fit: contain;
   display: block;
 }
 
