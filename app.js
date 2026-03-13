@@ -236,9 +236,9 @@ function selectAnswer(fishId, btn) {
 
   if (correct) {
     btn.classList.add('correct');
-    const timeBonus = Math.floor(timeLeft * 10);
-    const streakBonus = streak * 50;
-    const points = 100 + timeBonus + streakBonus;
+    const timeBonus = Math.floor(timeLeft * 3);
+    const streakBonus = streak * 20;
+    const points = 50 + timeBonus + streakBonus;
     score += points;
     streak++;
     totalCorrect++;
@@ -318,7 +318,9 @@ function showFeedback(correct, fishId) {
   document.getElementById('feedback-info').textContent = fish.info;
 
   const newDisc = document.getElementById('new-discovery');
-  newDisc.style.display = discoveredFish.has(fish.id) && correct ? 'block' : 'none';
+  const isNewDisc = discoveredFish.has(fish.id) && correct;
+  newDisc.style.display = isNewDisc ? 'block' : 'none';
+  if (isNewDisc) setTimeout(triggerSparkle, 300);
 
   showScreen('screen-feedback');
 }
@@ -403,6 +405,39 @@ async function loadGlobalLeaderboard() {
   }
 }
 
+
+
+// ============================================================
+// SPARKLE ANIMATION
+// ============================================================
+function triggerSparkle() {
+  const container = document.createElement('div');
+  container.className = 'sparkle-container';
+  document.body.appendChild(container);
+
+  const colors = ['#ffd60a', '#ff9500', '#ff3b30', '#34c759', '#0071e3', '#bf5af2'];
+  const count = 28;
+
+  for (let i = 0; i < count; i++) {
+    const s = document.createElement('div');
+    s.className = 'sparkle';
+    const angle = (i / count) * 360;
+    const dist = 80 + Math.random() * 120;
+    const tx = Math.cos(angle * Math.PI / 180) * dist;
+    const ty = Math.sin(angle * Math.PI / 180) * dist - 60;
+    s.style.cssText = `
+      left: 50%; top: 55%;
+      background: ${colors[i % colors.length]};
+      --tx: ${tx}px; --ty: ${ty}px;
+      animation-delay: ${Math.random() * 0.2}s;
+      width: ${4 + Math.random() * 7}px;
+      height: ${4 + Math.random() * 7}px;
+    `;
+    container.appendChild(s);
+  }
+
+  setTimeout(() => container.remove(), 1400);
+}
 
 // ============================================================
 // GALLERY
