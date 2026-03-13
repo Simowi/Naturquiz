@@ -62,7 +62,7 @@ function updateGalleryButton() {
     btn.disabled = true;
     btn.style.opacity = '0.4';
     btn.style.cursor = 'not-allowed';
-    btn.title = 'Spill minst én runde for å låse opp fangstboken';
+    btn.title = 'Spill minst én runde for å låse opp Ditt fiskegalleri';
   }
 }
 
