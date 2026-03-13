@@ -35,3 +35,4 @@ const FISH_DATA = [
 
 const FISH_BY_ID = {};
 FISH_DATA.forEach(f => { FISH_BY_ID[f.id] = f; });
+, confusesWith: 'Gjørs', confusionTip: 'Abbor har tydelige mørke tverrstriper'
