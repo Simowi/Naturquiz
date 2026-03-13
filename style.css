@@ -687,7 +687,6 @@ html, body {
 }
 
 .gallery-card {
-  aspect-ratio: 4/3;
   border-radius: 12px;
   overflow: hidden;
   cursor: pointer;
