@@ -302,7 +302,7 @@ function updateHUD() {
   // No lives display (single life mode)
 
   const streakEl = document.getElementById('streak-display');
-  streakEl.style.opacity = '0';
+  if (streakEl) streakEl.style.opacity = '0';
 }
 
 // ============================================================
