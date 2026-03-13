@@ -326,7 +326,7 @@ async function endGame() {
     <div class="stat-row"><span>Riktige svar</span><strong>${totalCorrect} / ${questionCount}</strong></div>
     <div class="stat-row"><span>Tid brukt</span><strong>${mins}m ${secs}s</strong></div>
     <div class="stat-row"><span>Nye oppdagelser</span><strong>${discoveredFish.size} fisker</strong></div>
-    <div class="stat-row"><span>Galleri totalt</span><strong>${allDiscovered.size} / 30</strong></div>
+    <div class="stat-row"><span>Galleri totalt</span><strong>${allDiscovered.size} / 31</strong></div>
   `;
 
   showScreen('screen-gameover');
@@ -351,13 +351,7 @@ async function endGame() {
 async function loadLeaderboard() {
   const list = document.getElementById('leaderboard-list');
   list.innerHTML = '<div class="loading-msg">Laster...</div>';
-
-  const activeTab = document.getElementById('tab-global').classList.contains('active') ? 'global' : 'personal';
-  if (activeTab === 'global') {
-    await loadGlobalLeaderboard();
-  } else {
-    loadPersonalScores();
-  }
+  await loadGlobalLeaderboard();
 }
 
 async function loadGlobalLeaderboard() {
@@ -389,34 +383,6 @@ async function loadGlobalLeaderboard() {
   }
 }
 
-function loadPersonalScores() {
-  const list = document.getElementById('leaderboard-list');
-  const saved = JSON.parse(localStorage.getItem('fiskequiz_scores') || '[]');
-
-  if (saved.length === 0) {
-    list.innerHTML = '<div class="loading-msg">Ingen personlige scores ennå.</div>';
-    return;
-  }
-
-  saved.sort((a, b) => b.score - a.score);
-  list.innerHTML = saved.map((row, i) => `
-    <div class="lb-row">
-      <div class="lb-rank">#${i + 1}</div>
-      <div class="lb-name">${escapeHtml(row.player_name)}</div>
-      <div class="lb-score">${Number(row.score).toLocaleString('no')}</div>
-      <div class="lb-detail">${new Date(row.date).toLocaleDateString('no')}</div>
-    </div>
-  `).join('');
-}
-
-function showTab(tab) {
-  document.getElementById('tab-global').classList.toggle('active', tab === 'global');
-  document.getElementById('tab-personal').classList.toggle('active', tab === 'personal');
-  loadLeaderboard();
-}
-
-// Save personal score on game end (also save locally)
-const origEndGame = endGame;
 
 // ============================================================
 // GALLERY
