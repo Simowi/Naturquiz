@@ -351,10 +351,19 @@ function updateHUD() {
 function showFeedback(correct, fishId, isTimeout = false) {
   const fish = currentFish;
 
-  document.getElementById('feedback-icon').textContent = correct ? '✅' : (isTimeout ? '⏱' : '❌');
-  document.getElementById('feedback-title').textContent = correct
-    ? 'Riktig!'
-    : (isTimeout ? 'Tiden gikk ut!' : 'Beklager – det var feil!');
+  // Toast
+  const toastMsg = correct ? '✅ Riktig!' : (isTimeout ? '⏱ Tiden gikk ut!' : '❌ Feil svar');
+  const toastColor = correct ? 'var(--correct)' : 'var(--wrong)';
+  const toast = document.getElementById('feedback-toast');
+  toast.textContent = toastMsg;
+  toast.style.background = toastColor;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 1800);
+
+  // Card border
+  const card = document.getElementById('fish-card-reveal');
+  card.classList.remove('card-correct', 'card-wrong');
+  card.classList.add(correct ? 'card-correct' : 'card-wrong');
 
   // Fish card
   document.getElementById('feedback-fish-img').src = currentImageFile;
