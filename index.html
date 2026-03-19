@@ -14,16 +14,52 @@
 <div id="screen-splash" class="screen active">
   <div class="splash-bg"></div>
   <div class="splash-content">
-    <div class="logo-mark">🐟</div>
+    <div class="logo-mark">🌿</div>
     <h1 class="logo-title">Naturquiz</h1>
     <p class="logo-sub">Klarer du å identifisere alle?</p>
-    <p id="splash-progress" class="splash-progress">0 / 31 fisker oppdaget</p>
     <div class="name-input-wrap">
       <input type="text" id="player-name" placeholder="Skriv inn navnet ditt" maxlength="20" autocomplete="off" />
     </div>
+    <div class="mode-selector">
+      <button class="mode-card" id="btn-mode-fish">
+        <span class="mode-icon">🐟</span>
+        <span class="mode-title">Fiskequiz</span>
+        <span class="mode-sub" id="splash-progress">0 / 31 oppdaget</span>
+      </button>
+      <button class="mode-card" id="btn-mode-bird">
+        <span class="mode-icon">🐦</span>
+        <span class="mode-title">Fuglequiz</span>
+        <span class="mode-sub" id="bird-splash-progress">0 / 46 oppdaget</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="screen-fish-splash" class="screen">
+  <div class="splash-bg"></div>
+  <div class="splash-content">
+    <div class="logo-mark">🐟</div>
+    <h1 class="logo-title">Fiskequiz</h1>
+    <p class="logo-sub">Klarer du å identifisere alle?</p>
+    <p id="splash-progress-fish" class="splash-progress">0 / 31 fisker oppdaget</p>
     <button class="btn-primary" id="btn-start-game">Start Quiz</button>
     <button class="btn-ghost btn-gallery-splash" id="btn-show-gallery-splash">🐠 Ditt fiskegalleri</button>
     <button class="btn-ghost" id="btn-show-leaderboard-splash">🏆 Ledertavle</button>
+    <button class="btn-back-mode" id="btn-back-to-mode">← Tilbake</button>
+  </div>
+</div>
+
+<div id="screen-bird-splash" class="screen">
+  <div class="splash-bg"></div>
+  <div class="splash-content">
+    <div class="logo-mark">🐦</div>
+    <h1 class="logo-title">Fuglequiz</h1>
+    <p class="logo-sub">Klarer du å identifisere alle?</p>
+    <p id="bird-splash-progress-detail" class="splash-progress">0 / 46 fugler oppdaget</p>
+    <button class="btn-primary" id="btn-start-bird-game">Start Quiz</button>
+    <button class="btn-ghost" id="btn-show-bird-gallery-splash">🦅 Ditt fuglegalleriet</button>
+    <button class="btn-ghost" id="btn-show-bird-leaderboard-splash">🏆 Ledertavle</button>
+    <button class="btn-back-mode" id="btn-back-to-mode-bird">← Tilbake</button>
   </div>
 </div>
 
