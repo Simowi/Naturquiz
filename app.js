@@ -58,6 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderGallery();
   updateGalleryButton();
   updateProgressText();
+  if (typeof initBirdQuiz === 'function') initBirdQuiz();
 });
 
 function loadDiscovered() {
