@@ -1098,3 +1098,47 @@ html, body {
   color: #fff;
   border-color: var(--accent, #007aff);
 }
+
+/* ── Mode selector ─────────────────────────────────────── */
+.mode-selector {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  margin: 16px 0;
+}
+.mode-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 20px 12px;
+  border-radius: 16px;
+  border: 1.5px solid var(--border, #e0e0e0);
+  background: var(--surface, #fff);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.mode-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+.mode-icon { font-size: 36px; }
+.mode-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text, #1c1c1e);
+}
+.mode-sub {
+  font-size: 12px;
+  color: var(--text2, #636366);
+}
+.btn-back-mode {
+  background: none;
+  border: none;
+  color: var(--accent, #007aff);
+  font-size: 15px;
+  cursor: pointer;
+  padding: 8px 0;
+  margin-top: 4px;
+}

@@ -9,6 +9,8 @@ function getWeekKey() {
 function updateProgressText() {
   const el = document.getElementById('splash-progress');
   if (el) el.textContent = allDiscovered.size + ' / 31 fisker oppdaget';
+  const el2 = document.getElementById('splash-progress-fish');
+  if (el2) el2.textContent = allDiscovered.size + ' / 31 fisker oppdaget';
 }
 
 function getRarityTier(fish) {
@@ -105,6 +107,21 @@ function showScreen(id) {
 // EVENT LISTENERS
 // ============================================================
 function setupEventListeners() {
+  // Mode selector
+  document.getElementById('btn-mode-fish').addEventListener('click', () => {
+    const name = document.getElementById('player-name').value.trim();
+    if (!name) { document.getElementById('player-name').focus(); return; }
+    updateProgressText();
+    showScreen('screen-fish-splash');
+  });
+  document.getElementById('btn-mode-bird').addEventListener('click', () => {
+    const name = document.getElementById('player-name').value.trim();
+    if (!name) { document.getElementById('player-name').focus(); return; }
+    birdUpdateProgressText();
+    showScreen('screen-bird-splash');
+  });
+  document.getElementById('btn-back-to-mode').addEventListener('click', () => showScreen('screen-splash'));
+  document.getElementById('btn-back-to-mode-bird').addEventListener('click', () => showScreen('screen-splash'));
   document.getElementById('btn-start-game').addEventListener('click', startGame);
   document.getElementById('player-name').addEventListener('keydown', e => {
     if (e.key === 'Enter') startGame();
