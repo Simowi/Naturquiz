@@ -417,7 +417,14 @@ function switchBirdLeaderboardTab(tab) {
 
 // ── Screen navigation ─────────────────────────────────────
 function showBirdScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const birdScreenIds = [
+    'screen-bird-splash','screen-bird-quiz','screen-bird-feedback',
+    'screen-bird-gameover','screen-bird-gallery','screen-bird-leaderboard'
+  ];
+  birdScreenIds.forEach(sid => {
+    const s = document.getElementById(sid);
+    if (s) s.classList.remove('active');
+  });
   const el = document.getElementById(id);
   if (el) el.classList.add('active');
 }
