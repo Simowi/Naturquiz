@@ -1142,3 +1142,12 @@ html, body {
   padding: 8px 0;
   margin-top: 4px;
 }
+
+/* ── Sentrering fix ────────────────────────────────────── */
+#screen-splash .splash-content,
+#screen-fish-splash .splash-content,
+#screen-bird-splash .splash-content {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+}

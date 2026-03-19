@@ -108,7 +108,8 @@ function showScreen(id) {
 // ============================================================
 function setupEventListeners() {
   // Mode selector
-  document.getElementById('btn-mode-fish').addEventListener('click', () => {
+  const btnModeFish = document.getElementById('btn-mode-fish');
+  if (btnModeFish) btnModeFish.addEventListener('click', () => {
     const name = document.getElementById('player-name').value.trim();
     if (!name) { document.getElementById('player-name').focus(); return; }
     updateProgressText();
