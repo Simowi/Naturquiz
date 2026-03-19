@@ -48,10 +48,11 @@ function birdUpdateProgressText() {
 
 // ── Game flow ─────────────────────────────────────────────
 function startBirdGame() {
-  const nameInput = document.getElementById('player-name');
-  const playerName = nameInput ? nameInput.value.trim() : '';
+  const hiddenInput = document.getElementById('bird-player-name-hidden');
+  const mainInput = document.getElementById('player-name');
+  const playerName = (hiddenInput && hiddenInput.value.trim()) || (mainInput && mainInput.value.trim()) || '';
   if (!playerName) {
-    if (nameInput) nameInput.focus();
+    showBirdScreen('screen-splash');
     return;
   }
 
