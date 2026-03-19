@@ -170,6 +170,108 @@
   <div id="leaderboard-list" class="leaderboard-list"></div>
 </div>
 
+
+  <!-- BIRD QUIZ SCREEN -->
+  <div id="screen-bird-quiz" class="screen">
+    <div class="quiz-header">
+      <div class="hud-score">
+        <span class="hud-label">Poeng</span>
+        <span class="hud-value" id="bird-score-value">0</span>
+      </div>
+      <div class="timer-bar-wrap">
+        <div class="timer-bar" id="bird-timer-bar"></div>
+      </div>
+      <div class="question-counter" id="bird-question-counter">Spørsmål 1</div>
+    </div>
+    <div class="fish-image-wrap" id="bird-image-wrap">
+      <img id="bird-image" src="" alt="Hvilken fugl er dette?" />
+      <div class="image-shimmer" id="bird-image-shimmer"></div>
+    </div>
+    <div class="options-grid" id="bird-options-grid"></div>
+  </div>
+
+  <!-- BIRD FEEDBACK SCREEN -->
+  <div id="screen-bird-feedback" class="screen">
+    <div class="feedback-content">
+      <div class="feedback-icon" id="bird-feedback-icon"></div>
+      <h2 class="feedback-title" id="bird-feedback-title"></h2>
+      <div class="fish-card-reveal" id="bird-card-reveal">
+        <img id="bird-feedback-img" src="" alt="" />
+        <div class="fish-card-info">
+          <div class="fish-name-no" id="bird-feedback-name-no"></div>
+          <div class="feedback-badges">
+            <span id="bird-feedback-rarity" style="display:none"></span>
+            <div class="fish-type-badge" id="bird-feedback-type"></div>
+          </div>
+          <div class="fish-name-en" id="bird-feedback-name-en"></div>
+          <div class="fish-name-la" id="bird-feedback-name-la"></div>
+          <div class="fish-trait" id="bird-feedback-trait"></div>
+          <div class="fish-info" id="bird-feedback-info"></div>
+        </div>
+      </div>
+      <div id="bird-feedback-confusion" class="feedback-confusion" style="display:none"></div>
+      <div class="new-discovery" id="bird-new-discovery" style="display:none">
+        ✨ Ny oppdagelse lagt til galleriet!
+      </div>
+      <button class="btn-primary" id="bird-btn-next">Neste fugl →</button>
+    </div>
+  </div>
+
+  <!-- BIRD GAME OVER SCREEN -->
+  <div id="screen-bird-gameover" class="screen">
+    <div class="gameover-content">
+      <div class="gameover-icon">🐦</div>
+      <h2>Spillet er over!</h2>
+      <div class="final-score-wrap">
+        <div class="final-score" id="bird-final-score">0</div>
+        <div class="final-score-label">poeng</div>
+      </div>
+      <div class="final-stats" id="bird-final-stats"></div>
+      <button class="btn-primary" id="btn-bird-restart">Spill igjen</button>
+      <button class="btn-ghost" id="btn-show-bird-gallery-go">🦅 Ditt fuglegalleriet<span id="bird-gameover-newbird-dot" style="display:none;width:10px;height:10px;background:#ff3b30;border-radius:50%;display:inline-block;margin-left:8px;vertical-align:middle;"></span></button>
+      <button class="btn-ghost" id="btn-show-bird-leaderboard-go">🏆 Se ledertavle</button>
+    </div>
+  </div>
+
+  <!-- BIRD GALLERY SCREEN -->
+  <div id="screen-bird-gallery" class="screen">
+    <div class="screen-header">
+      <button class="btn-back" id="btn-bird-gallery-back">←</button>
+      <h2>Ditt fuglegalleriet</h2>
+      <span class="gallery-count" id="bird-gallery-count">0 / 46</span>
+    </div>
+    <div class="gallery-grid" id="bird-gallery-grid"></div>
+  </div>
+
+  <!-- BIRD GALLERY MODAL -->
+  <div id="modal-bird" class="modal" style="display:none">
+    <div class="modal-card">
+      <img id="modal-bird-img" src="" alt="" />
+      <div class="modal-info">
+        <h2 id="modal-bird-name-no"></h2>
+        <span id="modal-bird-rarity"></span>
+        <p id="modal-bird-name-en" class="fish-name-en"></p>
+        <p id="modal-bird-name-la" class="fish-name-la"></p>
+        <p id="modal-bird-trait" class="fish-trait"></p>
+        <p id="modal-bird-info" class="fish-info"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- BIRD LEADERBOARD SCREEN -->
+  <div id="screen-bird-leaderboard" class="screen">
+    <div class="screen-header">
+      <button class="btn-back" id="btn-bird-leaderboard-back">←</button>
+      <h2>Ledertavle</h2>
+    </div>
+    <div class="leaderboard-content">
+      <div class="leaderboard-tabs">
+        <button class="tab-btn tab-active" id="bird-tab-weekly" onclick="switchBirdLeaderboardTab('weekly')">Denne uken</button>
+        <button class="tab-btn" id="bird-tab-alltime" onclick="switchBirdLeaderboardTab('alltime')">Alle tider</button>
+      </div>
+      <div class="leaderboard-list" id="bird-leaderboard-list"></div>
+    </div>
+  </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="fish-data.js"></script>
   <script src="bird-data.js"></script>
