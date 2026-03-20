@@ -529,11 +529,10 @@ async function loadGlobalLeaderboard() {
     }
 
     list.innerHTML = data.map((row, i) => `
-      <div class="lb-row ${row.player_name === playerName ? 'lb-you' : ''}">
+      <div class="lb-row">
         <div class="lb-rank">${i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i + 1}`}</div>
-        <div class="lb-name">${escapeHtml(row.player_name)}</div>
+        <div class="lb-name">${row.name || 'Anonym'}</div>
         <div class="lb-score">${Number(row.score).toLocaleString('no')}</div>
-        <div class="lb-detail">${row.correct}/${row.questions} riktige</div>
       </div>
     `).join('');
   } catch(e) {
