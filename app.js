@@ -531,7 +531,7 @@ async function loadGlobalLeaderboard() {
     list.innerHTML = data.map((row, i) => `
       <div class="lb-row">
         <div class="lb-rank">${i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i + 1}`}</div>
-        <div class="lb-name">${row.name || 'Anonym'}</div>
+        <div class="lb-name">${row.player_name || row.name || 'Anonym'}</div>
         <div class="lb-score">${Number(row.score).toLocaleString('no')}</div>
       </div>
     `).join('');
