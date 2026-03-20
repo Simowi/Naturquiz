@@ -391,8 +391,9 @@ async function endBirdGame() {
   }
 
   // Submit to Supabase
-  const nameInput = document.getElementById('bird-player-name');
-  const playerName = nameInput ? nameInput.value.trim() : 'Anonym';
+  const hiddenNameInput = document.getElementById('bird-player-name-hidden');
+  const mainNameInput = document.getElementById('player-name');
+  const playerName = (hiddenNameInput && hiddenNameInput.value.trim()) || (mainNameInput && mainNameInput.value.trim()) || 'Anonym';
   try {
     await supabaseClient.from('leaderboard_birds').insert([{ name: playerName, score: birdScore, week: getWeekKey() }]);
   } catch(e) { console.log('Leaderboard error:', e); }
