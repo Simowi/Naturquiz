@@ -538,20 +538,18 @@ async function endGame() {
 // ============================================================
 // LEADERBOARD
 // ============================================================
-async function loadLeaderboard(tab = 'weekly') {
+async function loadLeaderboard(tab = 'sprint') {
   const list = document.getElementById('leaderboard-list');
+  if (!list) return;
   list.innerHTML = '<div class="loading-msg">Laster...</div>';
-  await loadGlobalLeaderboard();
-}
 
-async function loadGlobalLeaderboard() {
-  const list = document.getElementById('leaderboard-list');
+  const fishLbTable = tab === 'sprint' ? 'leaderboard' : 'leaderboard_fish_relaxed';
   try {
     const { data, error } = await supabaseClient
-      .from('leaderboard')
+      .from(fishLbTable)
       .select('*')
       .order('score', { ascending: false })
-      .limit(20);
+      .limit(10);
 
     if (error) throw error;
 
@@ -560,17 +558,15 @@ async function loadGlobalLeaderboard() {
       return;
     }
 
-    list.innerHTML = data.map((row, i) => `
-      <div class="lb-row">
-        <div class="lb-rank">${i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i + 1}`}</div>
-        <div class="lb-name">${row.player_name || row.name || 'Anonym'}</div>
-        <div class="lb-score">${Number(row.score).toLocaleString('no')}</div>
-      </div>
-    `).join('');
+    list.innerHTML = data.map((row, i) => {
+      const rank = i === 0 ? '#1' : i === 1 ? '#2' : i === 2 ? '#3' : '#' + (i + 1);
+      return '<div class="lb-row"><div class="lb-rank">' + rank + '</div><div class="lb-name">' + (row.player_name || row.name || 'Anonym') + '</div><div class="lb-score">' + Number(row.score).toLocaleString('no') + '</div></div>';
+    }).join('');
   } catch(e) {
     list.innerHTML = '<div class="loading-msg">Kunne ikke laste leaderboard.</div>';
   }
 }
+
 
 
 
