@@ -484,10 +484,10 @@ async function loadBirdLeaderboard(tab = 'weekly') {
     }
 
     list.innerHTML = rows.map((r, i) => `
-      <div class="leaderboard-row">
-        <span class="leaderboard-rank">${i + 1}</span>
-        <span class="leaderboard-name">${r.name}</span>
-        <span class="leaderboard-score">${r.score}</span>
+      <div class="lb-row">
+        <div class="lb-rank">${i + 1}</div>
+        <div class="lb-name">${r.player_name || r.name || 'Anonym'}</div>
+        <div class="lb-score">${r.score}</div>
       </div>
     `).join('');
   } catch(e) {
