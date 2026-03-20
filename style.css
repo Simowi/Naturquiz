@@ -1159,3 +1159,31 @@ html, body {
   object-fit: cover;
   display: block;
 }
+
+/* ── Responsivitet – sentrert innhold ──────────────────── */
+.screen {
+  align-items: center;
+}
+
+.splash-content,
+.quiz-header,
+.fish-image-wrap,
+.options-grid,
+.feedback-content,
+.gameover-content,
+.leaderboard-content {
+  width: 100%;
+  max-width: 480px;
+  box-sizing: border-box;
+}
+
+.screen-header {
+  width: 100%;
+  max-width: 480px;
+  box-sizing: border-box;
+}
+
+.gallery-grid {
+  width: 100%;
+  max-width: 480px;
+}
