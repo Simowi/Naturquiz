@@ -42,6 +42,11 @@
     <h1 class="logo-title">Fiskequiz</h1>
     <p class="logo-sub">Klarer du å identifisere alle?</p>
     <p id="splash-progress-fish" class="splash-progress">0 / 31 fisker oppdaget</p>
+    <div class="mode-toggle-wrap">
+      <button class="mode-toggle-btn active" id="fish-toggle-sprint" onclick="fishSetMode('sprint')">⏱ Sprint</button>
+      <button class="mode-toggle-btn" id="fish-toggle-relaxed" onclick="fishSetMode('relaxed')">🧘 Rolig</button>
+    </div>
+    <p class="mode-toggle-desc" id="fish-mode-desc">Med klokke · 15 sekunder per spørsmål</p>
     <button class="btn-primary" id="btn-start-game">Start Quiz</button>
     <button class="btn-ghost btn-gallery-splash" id="btn-show-gallery-splash">🐠 Ditt fiskegalleri</button>
     <button class="btn-ghost" id="btn-show-leaderboard-splash">🏆 Ledertavle</button>
@@ -56,7 +61,13 @@
     <h1 class="logo-title">Fuglequiz</h1>
     <p class="logo-sub">Klarer du å identifisere alle?</p>
     <p id="bird-splash-progress-detail" class="splash-progress">0 / 46 fugler oppdaget</p>
-    <input type="hidden" id="bird-player-name" /><input type="hidden" id="bird-player-name-hidden" /><button class="btn-primary" id="btn-start-bird-game">Start Quiz</button>
+    <input type="hidden" id="bird-player-name" /><input type="hidden" id="bird-player-name-hidden" />
+    <div class="mode-toggle-wrap">
+      <button class="mode-toggle-btn active" id="bird-toggle-sprint" onclick="birdSetMode('sprint')">⏱ Sprint</button>
+      <button class="mode-toggle-btn" id="bird-toggle-relaxed" onclick="birdSetMode('relaxed')">🧘 Rolig</button>
+    </div>
+    <p class="mode-toggle-desc" id="bird-mode-desc">Med klokke · 20 sekunder per spørsmål</p>
+    <button class="btn-primary" id="btn-start-bird-game">Start Quiz</button>
     <button class="btn-ghost" id="btn-show-bird-gallery-splash">🦅 Ditt fuglegalleri</button>
     <button class="btn-ghost" id="btn-show-bird-leaderboard-splash">🏆 Ledertavle</button>
     <button class="btn-back-mode" id="btn-back-to-mode-bird">← Tilbake</button>
@@ -162,8 +173,8 @@
     <button class="btn-back" id="btn-back-leaderboard">←</button>
     <h2>Ledertavle</h2>
       <div class="leaderboard-tabs">
-        <button class="tab-btn tab-active" id="tab-weekly" onclick="switchLeaderboardTab('weekly')">Denne uken</button>
-        <button class="tab-btn" id="tab-alltime" onclick="switchLeaderboardTab('alltime')">Alle tider</button>
+        <button class="tab-btn tab-active" id="tab-sprint" onclick="switchLeaderboardTab('sprint')">⏱ Sprint</button>
+        <button class="tab-btn" id="tab-relaxed" onclick="switchLeaderboardTab('relaxed')">🧘 Rolig</button>
       </div>
   </div>
 
@@ -266,8 +277,8 @@
     </div>
     <div class="leaderboard-content">
       <div class="leaderboard-tabs">
-        <button class="tab-btn tab-active" id="bird-tab-weekly" onclick="switchBirdLeaderboardTab('weekly')">Denne uken</button>
-        <button class="tab-btn" id="bird-tab-alltime" onclick="switchBirdLeaderboardTab('alltime')">Alle tider</button>
+        <button class="tab-btn tab-active" id="bird-tab-sprint" onclick="switchBirdLeaderboardTab('sprint')">⏱ Sprint</button>
+        <button class="tab-btn" id="bird-tab-relaxed" onclick="switchBirdLeaderboardTab('relaxed')">🧘 Rolig</button>
       </div>
       <div class="leaderboard-list" id="bird-leaderboard-list"></div>
     </div>

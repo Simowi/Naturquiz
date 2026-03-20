@@ -12,10 +12,13 @@ function getRarityTierBird(bird) {
 }
 
 // ── State ────────────────────────────────────────────────
+let birdGameMode = 'sprint'; // 'sprint' eller 'relaxed'
 let birdScore       = 0;
 let birdLives       = 1;
 let birdTimeLeft    = 20;
 let birdTimerInterval;
+let birdRelaxedTimerInterval;
+let birdRelaxedTimeElapsed = 0;
 let birdGameStartTime;
 let birdQuestionCount = 0;
 let birdTotalCorrect  = 0;
@@ -46,6 +49,16 @@ function birdUpdateProgressText() {
   if (el) el.textContent = birdAllDiscovered.size + ' / 46 fugler oppdaget';
 }
 
+
+function birdSetMode(mode) {
+  birdGameMode = mode;
+  document.getElementById('bird-toggle-sprint').classList.toggle('active', mode === 'sprint');
+  document.getElementById('bird-toggle-relaxed').classList.toggle('active', mode === 'relaxed');
+  const desc = document.getElementById('bird-mode-desc');
+  if (desc) desc.textContent = mode === 'sprint'
+    ? 'Med klokke · 20 sekunder per spørsmål'
+    : 'Uten klokke · ubegrenset tid';
+}
 
 // ── Visuelle grupper for fugler ───────────────────────────
 const BIRD_VISUAL_GROUPS = [
@@ -149,6 +162,7 @@ function startBirdGame() {
   birdTotalCorrect   = 0;
   birdDiscoveredThisSession = new Set();
   birdGameStartTime  = Date.now();
+  birdRelaxedTimeElapsed = 0;
 
   birdUpdateHUD();
   showBirdScreen('screen-bird-quiz');
@@ -212,18 +226,30 @@ function birdLoadQuestion() {
 
 function birdStartTimer() {
   clearInterval(birdTimerInterval);
-  birdTimeLeft = 20;
-  birdUpdateTimerBar();
+  clearInterval(birdRelaxedTimerInterval);
 
-  birdTimerInterval = setInterval(() => {
-    birdTimeLeft--;
+  const bar = document.getElementById('bird-timer-bar');
+
+  if (birdGameMode === 'sprint') {
+    birdTimeLeft = 20;
+    if (bar) bar.style.display = 'block';
     birdUpdateTimerBar();
-    if (birdTimeLeft <= 0) {
-      clearInterval(birdTimerInterval);
-      birdDisableOptions();
-      showBirdFeedback(false, null, true);
-    }
-  }, 1000);
+    birdTimerInterval = setInterval(() => {
+      birdTimeLeft--;
+      birdUpdateTimerBar();
+      if (birdTimeLeft <= 0) {
+        clearInterval(birdTimerInterval);
+        birdDisableOptions();
+        showBirdFeedback(false, null, true);
+      }
+    }, 1000);
+  } else {
+    // Rolig-modus
+    if (bar) bar.style.display = 'none';
+    birdRelaxedTimerInterval = setInterval(() => {
+      birdRelaxedTimeElapsed++;
+    }, 1000);
+  }
 }
 
 function birdUpdateTimerBar() {
@@ -241,6 +267,7 @@ function birdDisableOptions() {
 
 function selectBirdAnswer(birdId, btn) {
   clearInterval(birdTimerInterval);
+  clearInterval(birdRelaxedTimerInterval);
   birdDisableOptions();
 
   const correct = birdId === birdCurrentBird.id;
@@ -364,7 +391,10 @@ function nextBirdQuestion() {
 
 async function endBirdGame() {
   clearInterval(birdTimerInterval);
-  const elapsed = Math.floor((Date.now() - birdGameStartTime) / 1000);
+  clearInterval(birdRelaxedTimerInterval);
+  const elapsed = birdGameMode === 'sprint'
+    ? Math.floor((Date.now() - birdGameStartTime) / 1000)
+    : birdRelaxedTimeElapsed;
   const mins = Math.floor(elapsed / 60);
   const secs = elapsed % 60;
 
@@ -395,7 +425,8 @@ async function endBirdGame() {
   const mainNameInput = document.getElementById('player-name');
   const playerName = (hiddenNameInput && hiddenNameInput.value.trim()) || (mainNameInput && mainNameInput.value.trim()) || 'Anonym';
   try {
-    await supabaseClient.from('leaderboard_birds').insert([{ name: playerName, score: birdScore, week: getWeekKey() }]);
+    const birdTable = birdGameMode === 'sprint' ? 'leaderboard_birds' : 'leaderboard_birds_relaxed';
+    await supabaseClient.from(birdTable).insert([{ name: playerName, score: birdScore, week: getWeekKey() }]);
   } catch(e) { console.log('Leaderboard error:', e); }
 
   showBirdScreen('screen-bird-gameover');
@@ -498,8 +529,8 @@ async function loadBirdLeaderboard(tab = 'weekly') {
 
 function switchBirdLeaderboardTab(tab) {
   currentBirdLeaderboardTab = tab;
-  document.getElementById('bird-tab-weekly').className = 'tab-btn' + (tab === 'weekly' ? ' tab-active' : '');
-  document.getElementById('bird-tab-alltime').className = 'tab-btn' + (tab === 'alltime' ? ' tab-active' : '');
+  document.getElementById('bird-tab-sprint').className = 'tab-btn' + (tab === 'sprint' ? ' tab-active' : '');
+  document.getElementById('bird-tab-relaxed').className = 'tab-btn' + (tab === 'relaxed' ? ' tab-active' : '');
   loadBirdLeaderboard(tab);
 }
 
@@ -552,13 +583,13 @@ function initBirdQuiz() {
 
   const btnLeaderboard = document.getElementById('btn-show-bird-leaderboard-splash');
   if (btnLeaderboard) btnLeaderboard.addEventListener('click', () => {
-    loadBirdLeaderboard('weekly');
+    loadBirdLeaderboard('sprint');
     showBirdScreen('screen-bird-leaderboard');
   });
 
   const btnLeaderboardGo = document.getElementById('btn-show-bird-leaderboard-go');
   if (btnLeaderboardGo) btnLeaderboardGo.addEventListener('click', () => {
-    loadBirdLeaderboard('weekly');
+    loadBirdLeaderboard(birdGameMode === 'sprint' ? 'sprint' : 'relaxed');
     showBirdScreen('screen-bird-leaderboard');
   });
 

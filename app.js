@@ -13,6 +13,16 @@ function updateProgressText() {
   if (el2) el2.textContent = allDiscovered.size + ' / 31 fisker oppdaget';
 }
 
+function fishSetMode(mode) {
+  fishGameMode = mode;
+  document.getElementById('fish-toggle-sprint').classList.toggle('active', mode === 'sprint');
+  document.getElementById('fish-toggle-relaxed').classList.toggle('active', mode === 'relaxed');
+  const desc = document.getElementById('fish-mode-desc');
+  if (desc) desc.textContent = mode === 'sprint'
+    ? 'Med klokke · 15 sekunder per spørsmål'
+    : 'Uten klokke · ubegrenset tid';
+}
+
 function getRarityTier(fish) {
   const r = fish.rarity || 1;
   if (r <= 6)  return { tier: 1, label: 'Vanlig' };
@@ -36,6 +46,7 @@ let playerName = '';
 let score = 0;
 let lives = 1;
 let streak = 0;
+let fishGameMode = 'sprint'; // 'sprint' eller 'relaxed'
 let questionCount = 0;
 let currentFish = null;
 let currentImageFile = null;
@@ -44,6 +55,8 @@ let shownImages = {};           // { fishId: Set of image numbers shown this ses
 let discoveredImages = {};      // { fishId: imageNum } 2013 which image to show in gallery
 let timerInterval = null;
 let timeLeft = 15;
+let relaxedTimerInterval = null;
+let relaxedTimeElapsed = 0;
 let gameStartTime = null;
 let totalCorrect = 0;
 let discoveredFish = new Set(); // fish ids discovered this session
@@ -136,14 +149,14 @@ function setupEventListeners() {
     showScreen('screen-gallery');
   });
   document.getElementById('btn-show-leaderboard-splash').addEventListener('click', () => {
-    loadLeaderboard();
+    loadLeaderboard('sprint');
     showScreen('screen-leaderboard');
   });
 
   document.getElementById('btn-next').addEventListener('click', nextQuestion);
   document.getElementById('btn-play-again').addEventListener('click', () => showScreen('screen-splash'));
   document.getElementById('btn-show-leaderboard-go').addEventListener('click', () => {
-    loadLeaderboard();
+    loadLeaderboard(fishGameMode === 'sprint' ? 'sprint' : 'relaxed');
     showScreen('screen-leaderboard');
   });
   document.getElementById('btn-show-gallery-go').addEventListener('click', () => {
@@ -179,6 +192,7 @@ function startGame() {
   shownImages = {};
   discoveredImages = {};
   gameStartTime = Date.now();
+  relaxedTimeElapsed = 0;
 
   updateHUD();
   showScreen('screen-quiz');
@@ -299,18 +313,31 @@ function loadQuestion() {
 // TIMER
 // ============================================================
 function startTimer() {
-  timeLeft = 15;
   clearInterval(timerInterval);
-  updateTimerBar(20, 20);
+  clearInterval(relaxedTimerInterval);
 
-  timerInterval = setInterval(() => {
-    timeLeft--;
-    updateTimerBar(timeLeft, 20);
-    if (timeLeft <= 0) {
-      clearInterval(timerInterval);
-      timeOut();
-    }
-  }, 1000);
+  const bar = document.getElementById('timer-bar');
+
+  if (fishGameMode === 'sprint') {
+    timeLeft = 15;
+    if (bar) bar.style.display = 'block';
+    updateTimerBar(15, 15);
+    timerInterval = setInterval(() => {
+      timeLeft--;
+      updateTimerBar(timeLeft, 15);
+      if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        timeOut();
+      }
+    }, 1000);
+  } else {
+    // Rolig-modus: skjul timer-bar, tell oppover
+    if (bar) bar.style.display = 'none';
+    const counter = document.getElementById('question-counter');
+    relaxedTimerInterval = setInterval(() => {
+      relaxedTimeElapsed++;
+    }, 1000);
+  }
 }
 
 function updateTimerBar(current, max) {
@@ -335,6 +362,7 @@ function timeOut() {
 // ============================================================
 function selectAnswer(fishId, btn) {
   clearInterval(timerInterval);
+  clearInterval(relaxedTimerInterval);
   disableOptions();
 
   const correct = fishId === currentFish.id;
@@ -470,7 +498,10 @@ function nextQuestion() {
 // ============================================================
 async function endGame() {
   clearInterval(timerInterval);
-  const elapsed = Math.floor((Date.now() - gameStartTime) / 1000);
+  clearInterval(relaxedTimerInterval);
+  const elapsed = fishGameMode === 'sprint'
+    ? Math.floor((Date.now() - gameStartTime) / 1000)
+    : relaxedTimeElapsed;
   const mins = Math.floor(elapsed / 60);
   const secs = elapsed % 60;
 
@@ -491,7 +522,8 @@ async function endGame() {
 
   // Save to Supabase
   try {
-    await supabaseClient.from('leaderboard').insert({
+    const fishTable = fishGameMode === 'sprint' ? 'leaderboard' : 'leaderboard_fish_relaxed';
+    await supabaseClient.from(fishTable).insert({
       player_name: playerName,
       score: score,
       correct: totalCorrect,
@@ -628,11 +660,11 @@ function escapeHtml(str) {
 }
 
 // ── Leaderboard tab switching ───────────────────────────
-let currentLeaderboardTab = 'weekly';
+let currentLeaderboardTab = 'sprint';
 function switchLeaderboardTab(tab) {
   currentLeaderboardTab = tab;
-  document.getElementById('tab-weekly').className = 'tab-btn' + (tab === 'weekly' ? ' tab-active' : '');
-  document.getElementById('tab-alltime').className = 'tab-btn' + (tab === 'alltime' ? ' tab-active' : '');
+  document.getElementById('tab-sprint').className = 'tab-btn' + (tab === 'sprint' ? ' tab-active' : '');
+  document.getElementById('tab-relaxed').className = 'tab-btn' + (tab === 'relaxed' ? ' tab-active' : '');
   const list = document.getElementById('leaderboard-list');
   if (list) {
     list.innerHTML = '<div style="text-align:center;padding:20px;color:#888">Laster...</div>';
