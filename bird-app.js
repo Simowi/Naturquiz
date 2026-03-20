@@ -491,37 +491,31 @@ function birdUpdateGalleryButton() {
 // ── Leaderboard ───────────────────────────────────────────
 let currentBirdLeaderboardTab = 'weekly';
 
-async function loadBirdLeaderboard(tab = 'weekly') {
+async function loadBirdLeaderboard(tab = 'sprint') {
   currentBirdLeaderboardTab = tab;
   const list = document.getElementById('bird-leaderboard-list');
   if (!list) return;
   list.innerHTML = '<div style="text-align:center;padding:20px;color:#888">Laster...</div>';
 
+  const birdLbTable = tab === 'sprint' ? 'leaderboard_birds' : 'leaderboard_birds_relaxed';
   try {
-    let query = supabaseClient.from('leaderboard_birds').select('name, score, week').order('score', { ascending: false }).limit(200);
-    const { data, error } = await query;
+    const { data, error } = await supabaseClient
+      .from(birdLbTable)
+      .select('name, score')
+      .order('score', { ascending: false })
+      .limit(10);
     if (error) throw error;
 
-    let rows = data || [];
-    if (tab === 'weekly') {
-      const wk = getWeekKey();
-      rows = rows.filter(r => r.week === wk).slice(0, 10);
-    } else {
-      rows = rows.slice(0, 10);
-    }
-
+    const rows = data || [];
     if (rows.length === 0) {
       list.innerHTML = '<div style="text-align:center;padding:20px;color:#888">Ingen resultater ennå</div>';
       return;
     }
 
-    list.innerHTML = rows.map((r, i) => `
-      <div class="lb-row">
-        <div class="lb-rank">${i + 1}</div>
-        <div class="lb-name">${r.player_name || r.name || 'Anonym'}</div>
-        <div class="lb-score">${r.score}</div>
-      </div>
-    `).join('');
+    list.innerHTML = rows.map((r, i) => {
+      const rank = i === 0 ? '#1' : i === 1 ? '#2' : i === 2 ? '#3' : '#' + (i + 1);
+      return '<div class="lb-row"><div class="lb-rank">' + rank + '</div><div class="lb-name">' + (r.name || 'Anonym') + '</div><div class="lb-score">' + r.score + '</div></div>';
+    }).join('');
   } catch(e) {
     list.innerHTML = '<div style="text-align:center;padding:20px;color:#888">Kunne ikke laste ledertavle</div>';
   }
