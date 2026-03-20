@@ -1187,3 +1187,19 @@ html, body {
   width: 100%;
   max-width: 480px;
 }
+
+/* ── Fuglequiz sentrering ──────────────────────────────── */
+#screen-bird-gameover,
+#screen-bird-feedback,
+#screen-bird-quiz,
+#screen-bird-splash,
+#screen-fish-splash {
+  align-items: center;
+  padding: 0 16px;
+}
+
+.gameover-content,
+.feedback-content {
+  width: 100%;
+  max-width: 480px;
+}
