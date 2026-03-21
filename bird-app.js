@@ -46,7 +46,7 @@ function birdSaveDiscovered() {
 
 function birdUpdateProgressText() {
   const el = document.getElementById('bird-splash-progress');
-  if (el) el.textContent = birdAllDiscovered.size + ' / 46 fugler oppdaget';
+  if (el) el.textContent = birdAllDiscovered.size + ' / 45 fugler oppdaget';
 }
 
 
@@ -407,7 +407,7 @@ async function endBirdGame() {
       <div class="stat-row"><span>Riktige svar</span><strong>${birdTotalCorrect} / ${birdQuestionCount}</strong></div>
       <div class="stat-row"><span>Tid brukt</span><strong>${mins}m ${secs}s</strong></div>
       <div class="stat-row"><span>Nye oppdagelser</span><strong>${birdDiscoveredThisSession.size} fugler</strong></div>
-      <div class="stat-row"><span>Galleri totalt</span><strong>${birdAllDiscovered.size} / 46</strong></div>
+      <div class="stat-row"><span>Galleri totalt</span><strong>${birdAllDiscovered.size} / 45</strong></div>
     `;
   }
 
@@ -436,7 +436,7 @@ async function endBirdGame() {
 function renderBirdGallery() {
   const grid = document.getElementById('bird-gallery-grid');
   const count = document.getElementById('bird-gallery-count');
-  if (count) count.textContent = `${birdAllDiscovered.size} / 46`;
+  if (count) count.textContent = `${birdAllDiscovered.size} / 45`;
 
   if (!grid) return;
   grid.innerHTML = [...BIRD_DATA].sort((a,b) => (a.rarity||99)-(b.rarity||99)).map(bird => {
