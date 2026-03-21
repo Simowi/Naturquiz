@@ -1187,11 +1187,11 @@ html, body {
   display: block;
   width: 100%;
   aspect-ratio: 16/9;
-  background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 80'><path fill='%23c2c8bf' d='M50,45 C45,38 35,32 25,35 C20,36 15,40 18,44 C21,48 28,46 33,44 C30,50 28,58 32,63 C35,67 40,65 42,61 C44,57 43,52 45,49 C47,52 48,58 52,61 C55,64 60,62 61,58 C63,53 60,48 58,44 C63,46 70,48 74,44 C78,40 74,34 68,34 C60,33 54,38 50,45Z M68,20 C72,15 78,16 80,20 C76,21 72,20 68,20Z'/></svg>");
+  background-image: url("images/bird_placeholder.png");
   background-repeat: no-repeat;
   background-position: center;
-  background-size: 65%;
-  opacity: 0.5;
+  background-size: 60%;
+  opacity: 0.4;
 }
 
 #gallery-grid .gallery-card.undiscovered .gallery-card-inner {
@@ -1205,11 +1205,11 @@ html, body {
   display: block;
   width: 100%;
   aspect-ratio: 16/9;
-  background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 60'><path fill='%23c2c8bf' d='M15,30 C15,20 25,12 40,12 C60,12 80,20 85,30 C80,40 60,48 40,48 C25,48 15,40 15,30Z M85,30 L95,18 L95,42 Z M55,22 C56,20 59,20 59,23 C59,25 56,25 55,23Z'/></svg>");
+  background-image: url("images/fish_placeholder.png");
   background-repeat: no-repeat;
   background-position: center;
-  background-size: 65%;
-  opacity: 0.5;
+  background-size: 70%;
+  opacity: 0.4;
 }
 
 /* Skjul gammel ?-ikon når silhuett er aktiv */
