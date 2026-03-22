@@ -518,9 +518,8 @@ async function endGame() {
   updateProgressText();
   const newFishDot = document.getElementById('gameover-newfish-dot');
   if (newFishDot) newFishDot.style.display = localStorage.getItem('fiskequiz_newfish') === '1' ? 'inline-block' : 'none';
-  showScreen('screen-gameover');
 
-  // Save to Supabase
+  // Save to Supabase BEFORE showing game over screen
   try {
     const fishTable = fishGameMode === 'sprint' ? 'leaderboard' : 'leaderboard_fish_relaxed';
     await supabaseClient.from(fishTable).insert({
@@ -533,6 +532,8 @@ async function endGame() {
   } catch(e) {
     console.warn('Leaderboard save failed:', e);
   }
+
+  showScreen('screen-gameover');
 }
 
 // ============================================================
