@@ -533,6 +533,40 @@ async function endGame() {
     console.warn('Leaderboard save failed:', e);
   }
 
+  // Save collector data
+  try {
+    var fishCount = allDiscovered.size;
+    var birdCount = typeof birdAllDiscovered !== 'undefined' ? birdAllDiscovered.size : 0;
+    var total = fishCount + birdCount;
+    var existing = await supabaseClient
+      .from('leaderboard_collectors')
+      .select('id, fish_discovered, bird_discovered')
+      .eq('player_name', playerName)
+      .order('total_species', { ascending: false })
+      .limit(1);
+    var rows = existing.data || [];
+    if (rows.length > 0) {
+      var best = rows[0];
+      if (total > (best.fish_discovered + best.bird_discovered)) {
+        await supabaseClient.from('leaderboard_collectors').update({
+          fish_discovered: fishCount,
+          bird_discovered: birdCount,
+          total_species: total
+        }).eq('id', best.id);
+      }
+    } else {
+      await supabaseClient.from('leaderboard_collectors').insert({
+        player_name: playerName,
+        fish_discovered: fishCount,
+        bird_discovered: birdCount,
+        total_species: total,
+        total_possible: 76
+      });
+    }
+  } catch(e) {
+    console.warn('Collector save failed:', e);
+  }
+
   showScreen('screen-gameover');
 }
 
@@ -656,15 +690,71 @@ function escapeHtml(str) {
   return str.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
+
+async function loadCollectorsLeaderboard(listId) {
+  listId = listId || 'leaderboard-list';
+  var list = document.getElementById(listId);
+  if (!list) return;
+  list.innerHTML = '<div class="loading-msg">Laster...</div>';
+  try {
+    var result = await supabaseClient
+      .from('leaderboard_collectors')
+      .select('player_name, fish_discovered, bird_discovered, total_species, total_possible')
+      .order('total_species', { ascending: false })
+      .limit(20);
+    var data = result.data || [];
+    if (data.length === 0) {
+      list.innerHTML = '<div class="loading-msg">Ingen samlere enda!</div>';
+      return;
+    }
+    list.innerHTML = data.map(function(row, i) {
+      var total = row.total_possible || 76;
+      var pct = Math.round((row.total_species / total) * 100);
+      var r = 28;
+      var circ = 2 * Math.PI * r;
+      var fishDash = (row.fish_discovered / total) * circ;
+      var birdDash = (row.bird_discovered / total) * circ;
+      var rank = i === 0 ? '#1' : i === 1 ? '#2' : i === 2 ? '#3' : '#' + (i + 1);
+      return '<div class="lb-row lb-collector-row">' +
+        '<div class="lb-rank">' + rank + '</div>' +
+        '<div class="lb-collector-info">' +
+          '<div class="lb-name">' + (row.player_name || 'Anonym') + '</div>' +
+          '<div class="lb-collector-sub">' + row.fish_discovered + ' fisker / ' + row.bird_discovered + ' fugler</div>' +
+        '</div>' +
+        '<div class="collector-circle-wrap">' +
+          '<svg width="70" height="70" viewBox="0 0 70 70">' +
+            '<circle cx="35" cy="35" r="' + r + '" fill="none" stroke="#eeeee7" stroke-width="6"/>' +
+            '<circle cx="35" cy="35" r="' + r + '" fill="none" stroke="#2563a8" stroke-width="6"' +
+              ' stroke-dasharray="' + fishDash + ' ' + circ + '" stroke-dashoffset="0"' +
+              ' stroke-linecap="round" transform="rotate(-90 35 35)"/>' +
+            '<circle cx="35" cy="35" r="' + r + '" fill="none" stroke="#17361d" stroke-width="6"' +
+              ' stroke-dasharray="' + birdDash + ' ' + circ + '" stroke-dashoffset="-' + fishDash + '"' +
+              ' stroke-linecap="round" transform="rotate(-90 35 35)"/>' +
+            '<text x="35" y="39" text-anchor="middle" font-family="Newsreader,serif"' +
+              ' font-size="14" font-weight="700" fill="#1a1c18">' + pct + '%</text>' +
+          '</svg>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  } catch(e) {
+    list.innerHTML = '<div class="loading-msg">Kunne ikke laste samlere.</div>';
+  }
+}
+
 // ── Leaderboard tab switching ───────────────────────────
 let currentLeaderboardTab = 'sprint';
 function switchLeaderboardTab(tab) {
   currentLeaderboardTab = tab;
   document.getElementById('tab-sprint').className = 'tab-btn' + (tab === 'sprint' ? ' tab-active' : '');
   document.getElementById('tab-relaxed').className = 'tab-btn' + (tab === 'relaxed' ? ' tab-active' : '');
+  document.getElementById('tab-collectors').className = 'tab-btn' + (tab === 'collectors' ? ' tab-active' : '');
   const list = document.getElementById('leaderboard-list');
   if (list) {
     list.innerHTML = '<div style="text-align:center;padding:20px;color:#888">Laster...</div>';
   }
-  loadLeaderboard(tab);
+  if (tab === 'collectors') {
+    loadCollectorsLeaderboard('leaderboard-list');
+  } else {
+    loadLeaderboard(tab);
+  }
 }

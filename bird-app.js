@@ -420,7 +420,7 @@ async function endBirdGame() {
     newBirdDot.style.display = localStorage.getItem('birdquiz_newbird') === '1' ? 'inline-block' : 'none';
   }
 
-  // Submit to Supabase
+  // Submit to Supabase BEFORE showing game over screen
   const hiddenNameInput = document.getElementById('bird-player-name-hidden');
   const mainNameInput = document.getElementById('player-name');
   const playerName = (hiddenNameInput && hiddenNameInput.value.trim()) || (mainNameInput && mainNameInput.value.trim()) || 'Anonym';
@@ -428,6 +428,40 @@ async function endBirdGame() {
     const birdTable = birdGameMode === 'sprint' ? 'leaderboard_birds' : 'leaderboard_birds_relaxed';
     await supabaseClient.from(birdTable).insert([{ name: playerName, score: birdScore, week: getWeekKey() }]);
   } catch(e) { console.log('Leaderboard error:', e); }
+
+  // Save collector data
+  try {
+    var fishCount = typeof allDiscovered !== 'undefined' ? allDiscovered.size : 0;
+    var birdCount = birdAllDiscovered.size;
+    var total = fishCount + birdCount;
+    var existing = await supabaseClient
+      .from('leaderboard_collectors')
+      .select('id, fish_discovered, bird_discovered')
+      .eq('player_name', playerName)
+      .order('total_species', { ascending: false })
+      .limit(1);
+    var rows = existing.data || [];
+    if (rows.length > 0) {
+      var best = rows[0];
+      if (total > (best.fish_discovered + best.bird_discovered)) {
+        await supabaseClient.from('leaderboard_collectors').update({
+          fish_discovered: fishCount,
+          bird_discovered: birdCount,
+          total_species: total
+        }).eq('id', best.id);
+      }
+    } else {
+      await supabaseClient.from('leaderboard_collectors').insert({
+        player_name: playerName,
+        fish_discovered: fishCount,
+        bird_discovered: birdCount,
+        total_species: total,
+        total_possible: 76
+      });
+    }
+  } catch(e) {
+    console.warn('Collector save failed:', e);
+  }
 
   showBirdScreen('screen-bird-gameover');
 }
@@ -525,7 +559,12 @@ function switchBirdLeaderboardTab(tab) {
   currentBirdLeaderboardTab = tab;
   document.getElementById('bird-tab-sprint').className = 'tab-btn' + (tab === 'sprint' ? ' tab-active' : '');
   document.getElementById('bird-tab-relaxed').className = 'tab-btn' + (tab === 'relaxed' ? ' tab-active' : '');
-  loadBirdLeaderboard(tab);
+  document.getElementById('bird-tab-collectors').className = 'tab-btn' + (tab === 'collectors' ? ' tab-active' : '');
+  if (tab === 'collectors') {
+    loadCollectorsLeaderboard('bird-leaderboard-list');
+  } else {
+    loadBirdLeaderboard(tab);
+  }
 }
 
 // ── Screen navigation ─────────────────────────────────────

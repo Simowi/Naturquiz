@@ -1217,3 +1217,24 @@ html, body {
 #gallery-grid .gallery-card.undiscovered .undiscovered-icon {
   display: none;
 }
+
+/* ── Samler-ledertavle ─────────────────────────────────── */
+.lb-collector-row {
+  grid-template-columns: 40px 1fr auto;
+  align-items: center;
+}
+.lb-collector-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.lb-collector-sub {
+  font-size: 11px;
+  color: var(--text3);
+  font-weight: 500;
+}
+.collector-circle-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
