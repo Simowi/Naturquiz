@@ -365,8 +365,13 @@ function showBirdFeedback(correct, birdId, isTimeout = false) {
 
   const imgEl = document.getElementById('bird-feedback-img');
   const fbSoundWrap = document.getElementById('bird-feedback-sound-wrap');
+  // Vis alltid bilde pa feedback-skjermen
+  if (imgEl) {
+    imgEl.style.display = 'block';
+    imgEl.src = birdCurrentImageFile;
+  }
+  // I lydmodus: vis ogsa lydspiller med pause-mulighet
   if (birdQuizType === 'sound') {
-    if (imgEl) imgEl.style.display = 'none';
     if (fbSoundWrap) {
       fbSoundWrap.style.display = 'block';
       const fbAudio = document.getElementById('bird-feedback-audio');
@@ -377,10 +382,6 @@ function showBirdFeedback(correct, birdId, isTimeout = false) {
     }
   } else {
     if (fbSoundWrap) fbSoundWrap.style.display = 'none';
-    if (imgEl) {
-      imgEl.style.display = 'block';
-      imgEl.src = birdCurrentImageFile;
-    }
   }
 
   const nameEl = document.getElementById('bird-feedback-name-no');
