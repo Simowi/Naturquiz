@@ -242,18 +242,27 @@ function birdLoadQuestion() {
   if (grid) {
     grid.innerHTML = '';
     grid.className = birdQuizType === 'sound' ? 'options-grid options-grid-image' : 'options-grid';
-    options.forEach(bird => {
-      const btn = document.createElement('button');
+    options.forEach(function(bird) {
+      var btn = document.createElement('button');
       if (birdQuizType === 'sound') {
         btn.className = 'option-btn option-btn-image';
-        const imgNum = Math.floor(Math.random() * (bird.maxImg || 5)) + 1;
-        btn.innerHTML = '<img src="images/fugler/' + bird.folder + '_' + imgNum + '.jpg" alt="' + bird.nameNo + '" onerror="this.src='images/fugler/' + bird.folder + '_1.jpg'" /><span>' + bird.nameNo + '</span>';
+        var imgNum = Math.floor(Math.random() * (bird.maxImg || 5)) + 1;
+        var imgSrc = 'images/fugler/' + bird.folder + '_' + imgNum + '.jpg';
+        var fallback = 'images/fugler/' + bird.folder + '_1.jpg';
+        var img = document.createElement('img');
+        img.src = imgSrc;
+        img.alt = bird.nameNo;
+        img.onerror = function() { this.src = fallback; };
+        var span = document.createElement('span');
+        span.textContent = bird.nameNo;
+        btn.appendChild(img);
+        btn.appendChild(span);
       } else {
         btn.className = 'option-btn';
         btn.textContent = bird.nameNo;
       }
       btn.dataset.birdId = bird.id;
-      btn.addEventListener('click', () => selectBirdAnswer(bird.id, btn));
+      btn.addEventListener('click', function() { selectBirdAnswer(bird.id, btn); });
       grid.appendChild(btn);
     });
   }
