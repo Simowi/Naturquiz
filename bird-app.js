@@ -12,8 +12,8 @@ function getRarityTierBird(bird) {
 }
 
 // ── State ────────────────────────────────────────────────
-let birdGameMode = 'sprint';
-let birdQuizType = 'visual'; // 'sprint' eller 'relaxed'
+let birdGameMode = 'relaxed';
+let birdQuizType = 'sound'; // 'sprint' eller 'relaxed'
 let birdScore       = 0;
 let birdLives       = 1;
 let birdTimeLeft    = 20;
@@ -59,6 +59,17 @@ function birdSetMode(mode) {
   if (desc) desc.textContent = mode === 'sprint'
     ? 'Med klokke · 20 sekunder per spørsmål'
     : 'Uten klokke · ubegrenset tid';
+  var soundBtn = document.getElementById('bird-type-sound');
+  var visualBtn = document.getElementById('bird-type-visual');
+  if (mode === 'sprint') {
+    // Sprint: kun bilde, skjul lyd-knapp
+    birdQuizType = 'visual';
+    if (visualBtn) { visualBtn.classList.add('active'); }
+    if (soundBtn) { soundBtn.classList.remove('active'); soundBtn.style.display = 'none'; }
+  } else {
+    // Rolig: vis lyd-knapp
+    if (soundBtn) soundBtn.style.display = '';
+  }
   // Lyd kun i Rolig
   const soundBtn = document.getElementById('bird-type-sound');
   if (mode === 'sprint') {
