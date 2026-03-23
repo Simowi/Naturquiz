@@ -1351,3 +1351,27 @@ html, body {
 }
 .option-btn-image.wrong span { color: #c0392b; }
 .option-btn-image:disabled { opacity: 0.7; cursor: default; }
+
+/* ── Override for lydquiz bildegrid ─────────────────────── */
+#bird-options-grid.options-grid-image {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  grid-template-rows: auto auto !important;
+  gap: 8px !important;
+  padding: 8px 12px !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+#bird-options-grid.options-grid-image .option-btn-image {
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+}
+#bird-options-grid.options-grid-image .option-btn-image img {
+  width: 100% !important;
+  height: auto !important;
+  max-height: 120px !important;
+  aspect-ratio: 16/9 !important;
+  object-fit: cover !important;
+}
