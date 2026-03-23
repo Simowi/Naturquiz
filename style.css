@@ -1298,3 +1298,56 @@ html, body {
 #screen-bird-splash .logo-sub { display: none; }
 #screen-bird-splash .btn-primary { padding: 12px 24px; }
 #screen-bird-splash .btn-ghost { padding: 10px 24px; }
+
+/* ── Lydquiz: svaralternativer med bilde ───────────────── */
+.options-grid-image {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 10px 12px;
+}
+.option-btn-image {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--surface);
+  border: 1.5px solid var(--outline);
+  cursor: pointer;
+  transition: border-color 0.15s, transform 0.12s;
+  box-shadow: var(--shadow);
+}
+.option-btn-image img {
+  width: 100%;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+.option-btn-image span {
+  font-family: "Manrope", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  padding: 5px 6px;
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+.option-btn-image:hover:not(:disabled) {
+  border-color: var(--primary);
+  transform: translateY(-1px);
+}
+.option-btn-image.correct {
+  border-color: #34c759;
+  background: rgba(52,199,89,0.08);
+}
+.option-btn-image.correct span { color: #1a7a35; font-weight: 700; }
+.option-btn-image.wrong {
+  border-color: #ff3b30;
+  background: rgba(255,59,48,0.08);
+}
+.option-btn-image.wrong span { color: #c0392b; }
+.option-btn-image:disabled { opacity: 0.7; cursor: default; }
