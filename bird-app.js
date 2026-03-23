@@ -62,19 +62,9 @@ function birdSetMode(mode) {
   var soundBtn = document.getElementById('bird-type-sound');
   var visualBtn = document.getElementById('bird-type-visual');
   if (mode === 'sprint') {
-    // Sprint: kun bilde, skjul lyd-knapp
     birdQuizType = 'visual';
     if (visualBtn) { visualBtn.classList.add('active'); }
     if (soundBtn) { soundBtn.classList.remove('active'); soundBtn.style.display = 'none'; }
-  } else {
-    // Rolig: vis lyd-knapp
-    if (soundBtn) soundBtn.style.display = '';
-  }
-  // Lyd kun i Rolig
-  const soundBtn = document.getElementById('bird-type-sound');
-  if (mode === 'sprint') {
-    if (soundBtn) soundBtn.style.display = 'none';
-    if (birdQuizType === 'sound') birdSetType('visual');
   } else {
     if (soundBtn) soundBtn.style.display = '';
   }
