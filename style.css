@@ -1238,3 +1238,63 @@ html, body {
   align-items: center;
   justify-content: center;
 }
+
+/* ── Lydquiz ───────────────────────────────────────────── */
+.quiz-type-toggle-wrap {
+  display: flex;
+  gap: 4px;
+  width: 100%;
+  background: var(--surface3);
+  border-radius: var(--radius-full);
+  padding: 4px;
+  margin: 4px 0 8px;
+}
+.quiz-type-btn {
+  flex: 1;
+  padding: 9px 16px;
+  border: none;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--text2);
+  font-family: "Manrope", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.quiz-type-btn.active {
+  background: var(--primary);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(23,54,29,0.2);
+}
+.bird-sound-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: var(--surface2);
+  padding: 24px;
+  gap: 8px;
+}
+.sound-quiz-icon {
+  font-size: 52px;
+  animation: float 2s ease-in-out infinite;
+}
+.sound-quiz-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text2);
+  margin: 0;
+}
+/* Kompakt splash for fuglequiz */
+#screen-bird-splash .splash-content {
+  gap: 8px;
+  padding: 20px 24px 16px;
+}
+#screen-bird-splash .logo-mark { font-size: 38px; }
+#screen-bird-splash .logo-title { font-size: 32px; }
+#screen-bird-splash .logo-sub { display: none; }
+#screen-bird-splash .btn-primary { padding: 12px 24px; }
+#screen-bird-splash .btn-ghost { padding: 10px 24px; }

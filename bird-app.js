@@ -12,7 +12,8 @@ function getRarityTierBird(bird) {
 }
 
 // ── State ────────────────────────────────────────────────
-let birdGameMode = 'sprint'; // 'sprint' eller 'relaxed'
+let birdGameMode = 'sprint';
+let birdQuizType = 'visual'; // 'sprint' eller 'relaxed'
 let birdScore       = 0;
 let birdLives       = 1;
 let birdTimeLeft    = 20;
@@ -58,6 +59,22 @@ function birdSetMode(mode) {
   if (desc) desc.textContent = mode === 'sprint'
     ? 'Med klokke · 20 sekunder per spørsmål'
     : 'Uten klokke · ubegrenset tid';
+  // Lyd kun i Rolig
+  const soundBtn = document.getElementById('bird-type-sound');
+  if (mode === 'sprint') {
+    if (soundBtn) soundBtn.style.display = 'none';
+    if (birdQuizType === 'sound') birdSetType('visual');
+  } else {
+    if (soundBtn) soundBtn.style.display = '';
+  }
+}
+
+function birdSetType(type) {
+  birdQuizType = type;
+  const vBtn = document.getElementById('bird-type-visual');
+  const sBtn = document.getElementById('bird-type-sound');
+  if (vBtn) vBtn.classList.toggle('active', type === 'visual');
+  if (sBtn) sBtn.classList.toggle('active', type === 'sound');
 }
 
 // ── Visuelle grupper for fugler ───────────────────────────
@@ -189,16 +206,33 @@ function birdLoadQuestion() {
 
   const shimmer = document.getElementById('bird-image-shimmer');
   const img = document.getElementById('bird-image');
-  if (shimmer) shimmer.style.display = 'block';
-  if (img) {
-    img.style.opacity = '0';
-    img.onload = () => {
-      if (shimmer) shimmer.style.display = 'none';
-      img.style.transition = 'opacity 0.4s ease';
-      img.style.opacity = '1';
-    };
-    img.onerror = () => { img.src = `images/fugler/${birdCurrentBird.folder}_1.jpg`; };
-    img.src = birdCurrentImageFile;
+  const soundWrap = document.getElementById('bird-sound-wrap');
+
+  if (birdQuizType === 'sound') {
+    if (img) { img.style.display = 'none'; }
+    if (shimmer) shimmer.style.display = 'none';
+    if (soundWrap) {
+      soundWrap.style.display = 'flex';
+      const audio = document.getElementById('bird-audio');
+      if (audio) {
+        audio.src = 'sounds/fugler/' + birdCurrentBird.folder + '.mp3';
+        audio.load();
+      }
+    }
+  } else {
+    if (soundWrap) soundWrap.style.display = 'none';
+    if (img) { img.style.display = 'block'; }
+    if (shimmer) shimmer.style.display = 'block';
+    if (img) {
+      img.style.opacity = '0';
+      img.onload = () => {
+        if (shimmer) shimmer.style.display = 'none';
+        img.style.transition = 'opacity 0.4s ease';
+        img.style.opacity = '1';
+      };
+      img.onerror = () => { img.src = 'images/fugler/' + birdCurrentBird.folder + '_1.jpg'; };
+      img.src = birdCurrentImageFile;
+    }
   }
 
   const wrong = getBirdWrongAnswers(birdCurrentBird, BIRD_DATA);
@@ -323,7 +357,24 @@ function showBirdFeedback(correct, birdId, isTimeout = false) {
   if (titleEl) titleEl.textContent = correct ? 'Riktig!' : (isTimeout ? 'Tiden er ute!' : 'Beklager – det var feil!');
 
   const imgEl = document.getElementById('bird-feedback-img');
-  if (imgEl) imgEl.src = birdCurrentImageFile;
+  const fbSoundWrap = document.getElementById('bird-feedback-sound-wrap');
+  if (birdQuizType === 'sound') {
+    if (imgEl) imgEl.style.display = 'none';
+    if (fbSoundWrap) {
+      fbSoundWrap.style.display = 'block';
+      const fbAudio = document.getElementById('bird-feedback-audio');
+      if (fbAudio) {
+        fbAudio.src = 'sounds/fugler/' + birdCurrentBird.folder + '.mp3';
+        fbAudio.load();
+      }
+    }
+  } else {
+    if (fbSoundWrap) fbSoundWrap.style.display = 'none';
+    if (imgEl) {
+      imgEl.style.display = 'block';
+      imgEl.src = birdCurrentImageFile;
+    }
+  }
 
   const nameEl = document.getElementById('bird-feedback-name-no');
   if (nameEl) nameEl.textContent = bird.nameNo;

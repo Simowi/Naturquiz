@@ -67,6 +67,10 @@
       <button class="mode-toggle-btn" id="bird-toggle-relaxed" onclick="birdSetMode('relaxed')">🧘 Rolig</button>
     </div>
     <p class="mode-toggle-desc" id="bird-mode-desc">Med klokke · 20 sekunder per spørsmål</p>
+    <div class="quiz-type-toggle-wrap">
+      <button class="quiz-type-btn active" id="bird-type-visual" onclick="birdSetType('visual')">Bilde</button>
+      <button class="quiz-type-btn" id="bird-type-sound" onclick="birdSetType('sound')">Lyd</button>
+    </div>
     <button class="btn-primary" id="btn-start-bird-game">Start Quiz</button>
     <button class="btn-ghost" id="btn-show-bird-gallery-splash">🦅 Ditt fuglegalleri</button>
     <button class="btn-ghost" id="btn-show-bird-leaderboard-splash">🏆 Ledertavle</button>
@@ -199,6 +203,11 @@
     <div class="fish-image-wrap" id="bird-image-wrap">
       <img id="bird-image" src="" alt="Hvilken fugl er dette?" />
       <div class="image-shimmer" id="bird-image-shimmer"></div>
+      <div class="bird-sound-wrap" id="bird-sound-wrap" style="display:none">
+        <div class="sound-quiz-icon">🎵</div>
+        <p class="sound-quiz-label">Hvilken fugl synger dette?</p>
+        <audio id="bird-audio" controls preload="auto" style="width:90%;margin-top:8px;"></audio>
+      </div>
     </div>
     <div class="options-grid" id="bird-options-grid"></div>
   </div>
@@ -209,6 +218,10 @@
       <div class="feedback-icon" id="bird-feedback-icon"></div>
       <h2 class="feedback-title" id="bird-feedback-title"></h2>
       <div class="fish-card-reveal" id="bird-card-reveal">
+        <div id="bird-feedback-sound-wrap" style="display:none;padding:16px;text-align:center;background:var(--surface2)">
+          <p style="font-size:13px;color:var(--text2);margin-bottom:8px;font-weight:600">Fuglesang:</p>
+          <audio id="bird-feedback-audio" controls preload="auto" style="width:90%;max-width:320px;"></audio>
+        </div>
         <img id="bird-feedback-img" src="" alt="" />
         <div class="fish-card-info">
           <div class="fish-name-no" id="bird-feedback-name-no"></div>
