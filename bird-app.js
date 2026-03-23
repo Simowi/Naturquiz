@@ -241,10 +241,17 @@ function birdLoadQuestion() {
   const grid = document.getElementById('bird-options-grid');
   if (grid) {
     grid.innerHTML = '';
+    grid.className = birdQuizType === 'sound' ? 'options-grid options-grid-image' : 'options-grid';
     options.forEach(bird => {
       const btn = document.createElement('button');
-      btn.className = 'option-btn';
-      btn.textContent = bird.nameNo;
+      if (birdQuizType === 'sound') {
+        btn.className = 'option-btn option-btn-image';
+        const imgNum = Math.floor(Math.random() * (bird.maxImg || 5)) + 1;
+        btn.innerHTML = '<img src="images/fugler/' + bird.folder + '_' + imgNum + '.jpg" alt="' + bird.nameNo + '" onerror="this.src='images/fugler/' + bird.folder + '_1.jpg'" /><span>' + bird.nameNo + '</span>';
+      } else {
+        btn.className = 'option-btn';
+        btn.textContent = bird.nameNo;
+      }
       btn.dataset.birdId = bird.id;
       btn.addEventListener('click', () => selectBirdAnswer(bird.id, btn));
       grid.appendChild(btn);
@@ -432,6 +439,12 @@ function showBirdFeedback(correct, birdId, isTimeout = false) {
 }
 
 function nextBirdQuestion() {
+  // Stopp eventuell lyd som spilles
+  const audio = document.getElementById('bird-audio');
+  if (audio) { audio.pause(); audio.currentTime = 0; }
+  const fbAudio = document.getElementById('bird-feedback-audio');
+  if (fbAudio) { fbAudio.pause(); fbAudio.currentTime = 0; }
+
   if (birdLives <= 0) {
     endBirdGame();
   } else {
