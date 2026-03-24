@@ -1421,3 +1421,6 @@ html, body {
   font-size: 12px;
   font-weight: 600;
 }
+
+/* ── imgPosition brukes som object-position ─────────────── */
+/* Settes dynamisk via JS */

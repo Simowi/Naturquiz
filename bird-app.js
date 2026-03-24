@@ -382,6 +382,7 @@ function showBirdFeedback(correct, birdId, isTimeout = false) {
   if (imgEl) {
     imgEl.style.display = 'block';
     imgEl.src = birdCurrentImageFile;
+    imgEl.style.objectPosition = birdCurrentBird.imgPosition || 'center center';
   }
   var fbPlayBtn = document.getElementById('bird-feedback-play-btn');
   var globalAudio = document.getElementById('bird-audio-global');
