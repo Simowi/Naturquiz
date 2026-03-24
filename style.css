@@ -1395,3 +1395,29 @@ html, body {
   flex-shrink: 0;
 }
 .feedback-play-btn:hover { background: #2e4d32; transform: scale(1.08); }
+
+/* ── Overstyr: play-knapp nede til høyre i lydkortet ───── */
+.bird-sound-wrap {
+  position: relative;
+}
+.bird-play-btn {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: var(--primary);
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  box-shadow: 0 4px 16px rgba(23,54,29,0.3);
+  transition: background 0.15s, transform 0.1s;
+  z-index: 2;
+}
+.bird-play-btn:hover { background: #2e4d32; transform: scale(1.06); }
