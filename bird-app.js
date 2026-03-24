@@ -214,10 +214,15 @@ function birdLoadQuestion() {
     if (shimmer) shimmer.style.display = 'none';
     if (soundWrap) {
       soundWrap.style.display = 'flex';
-      const audio = document.getElementById('bird-audio');
-      if (audio) {
-        audio.src = 'sounds/fugler/' + birdCurrentBird.folder + '.mp3';
-        audio.load();
+      var globalAudio = document.getElementById('bird-audio-global');
+      if (globalAudio) {
+        globalAudio.src = 'sounds/fugler/' + birdCurrentBird.folder + '.mp3';
+        globalAudio.loop = true;
+        globalAudio.load();
+        globalAudio.play();
+        var qBtn = document.getElementById('bird-quiz-play-btn');
+        if (qBtn) qBtn.textContent = '⏸';
+        globalAudio.onended = null;
       }
     }
   } else {
@@ -449,12 +454,37 @@ function showBirdFeedback(correct, birdId, isTimeout = false) {
   showBirdScreen('screen-bird-feedback');
 }
 
+function toggleQuizAudio() {
+  var audio = document.getElementById('bird-audio-global');
+  var btn = document.getElementById('bird-quiz-play-btn');
+  if (!audio) return;
+  if (audio.paused) {
+    audio.play();
+    if (btn) btn.textContent = '⏸';
+  } else {
+    audio.pause();
+    if (btn) btn.textContent = '▶';
+  }
+}
+
+function toggleFeedbackAudio() {
+  var audio = document.getElementById('bird-audio-global');
+  var btn = document.getElementById('bird-feedback-play-btn');
+  if (!audio) return;
+  if (audio.paused) {
+    audio.currentTime = 0;
+    audio.play();
+    if (btn) btn.textContent = '⏸';
+  } else {
+    audio.pause();
+    if (btn) btn.textContent = '▶';
+  }
+}
+
 function nextBirdQuestion() {
   // Stopp eventuell lyd som spilles
-  const audio = document.getElementById('bird-audio');
-  if (audio) { audio.pause(); audio.currentTime = 0; }
-  const fbAudio = document.getElementById('bird-feedback-audio');
-  if (fbAudio) { fbAudio.pause(); fbAudio.currentTime = 0; }
+  var globalAudio = document.getElementById('bird-audio-global');
+  if (globalAudio) { globalAudio.pause(); globalAudio.currentTime = 0; globalAudio.loop = false; globalAudio.onended = null; }
 
   if (birdLives <= 0) {
     endBirdGame();
