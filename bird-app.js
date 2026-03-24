@@ -600,6 +600,10 @@ function renderBirdGallery() {
   if (count) count.textContent = `${birdAllDiscovered.size} / 45`;
 
   if (!grid) return;
+  if (birdAllDiscovered.size === 0) {
+    grid.innerHTML = '<div class="gallery-empty"><div class="gallery-empty-icon">🐦</div><p class="gallery-empty-title">Ingen fugler oppdaget ennå</p><p class="gallery-empty-sub">Fullfør en quiz for å legge til fugler i galleriet ditt!</p></div>';
+    return;
+  }
   grid.innerHTML = [...BIRD_DATA].sort((a,b) => (a.rarity||99)-(b.rarity||99)).map(bird => {
     const rt = getRarityTierBird(bird);
     const discovered = birdAllDiscovered.has(bird.id);
@@ -674,8 +678,9 @@ async function loadBirdLeaderboard(tab = 'sprint') {
     }
 
     list.innerHTML = rows.map((r, i) => {
-      const rank = i === 0 ? '#1' : i === 1 ? '#2' : i === 2 ? '#3' : '#' + (i + 1);
-      return '<div class="lb-row"><div class="lb-rank">' + rank + '</div><div class="lb-name">' + (r.name || 'Anonym') + '</div><div class="lb-score">' + r.score + '</div></div>';
+      const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '#' + (i + 1);
+      const topClass = i < 3 ? ' lb-row-top lb-row-top-' + (i+1) : '';
+      return '<div class="lb-row' + topClass + '"><div class="lb-rank">' + medal + '</div><div class="lb-name">' + (r.name || 'Anonym') + '</div><div class="lb-score">' + r.score + '</div></div>';
     }).join('');
   } catch(e) {
     list.innerHTML = '<div style="text-align:center;padding:20px;color:#888">Kunne ikke laste ledertavle</div>';

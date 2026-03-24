@@ -594,8 +594,9 @@ async function loadLeaderboard(tab = 'sprint') {
     }
 
     list.innerHTML = data.map((row, i) => {
-      const rank = i === 0 ? '#1' : i === 1 ? '#2' : i === 2 ? '#3' : '#' + (i + 1);
-      return '<div class="lb-row"><div class="lb-rank">' + rank + '</div><div class="lb-name">' + (row.player_name || row.name || 'Anonym') + '</div><div class="lb-score">' + Number(row.score).toLocaleString('no') + '</div></div>';
+      const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '#' + (i + 1);
+      const topClass = i < 3 ? ' lb-row-top lb-row-top-' + (i+1) : '';
+      return '<div class="lb-row' + topClass + '"><div class="lb-rank">' + medal + '</div><div class="lb-name">' + (row.player_name || row.name || 'Anonym') + '</div><div class="lb-score">' + Number(row.score).toLocaleString('no') + '</div></div>';
     }).join('');
   } catch(e) {
     list.innerHTML = '<div class="loading-msg">Kunne ikke laste leaderboard.</div>';
@@ -645,6 +646,10 @@ function renderGallery() {
   const count = document.getElementById('gallery-count');
   count.textContent = `${allDiscovered.size} / 31`;
 
+  if (allDiscovered.size === 0) {
+    grid.innerHTML = '<div class="gallery-empty"><div class="gallery-empty-icon">🐟</div><p class="gallery-empty-title">Ingen fisker oppdaget ennå</p><p class="gallery-empty-sub">Fullfør en quiz for å legge til fisker i galleriet ditt!</p></div>';
+    return;
+  }
   grid.innerHTML = [...FISH_DATA].sort((a,b) => (a.rarity||99)-(b.rarity||99)).map(fish => {
     const rt = getRarityTier(fish);
     const discovered = allDiscovered.has(fish.id);
