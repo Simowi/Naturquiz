@@ -214,8 +214,6 @@ function birdLoadQuestion() {
     if (shimmer) shimmer.style.display = 'none';
     if (soundWrap) {
       soundWrap.style.display = 'flex';
-      var descEl = document.getElementById('bird-sound-desc');
-      if (descEl) descEl.textContent = birdCurrentBird.soundDesc || '';
       var globalAudio = document.getElementById('bird-audio-global');
       if (globalAudio) {
         globalAudio.src = 'sounds/fugler/' + birdCurrentBird.folder + '.mp3';
@@ -400,8 +398,15 @@ function showBirdFeedback(correct, birdId, isTimeout = false) {
       fbPlayBtn.style.display = 'inline-flex';
       fbPlayBtn.textContent = '⏸';
     }
+    var fbSoundDesc = document.getElementById('bird-feedback-sound-desc');
+    if (fbSoundDesc) {
+      fbSoundDesc.textContent = birdCurrentBird.soundDesc || '';
+      fbSoundDesc.style.display = 'block';
+    }
   } else {
     if (fbPlayBtn) fbPlayBtn.style.display = 'none';
+    var fbSoundDesc2 = document.getElementById('bird-feedback-sound-desc');
+    if (fbSoundDesc2) fbSoundDesc2.style.display = 'none';
   }
 
   const nameEl = document.getElementById('bird-feedback-name-no');
