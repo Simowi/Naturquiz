@@ -259,6 +259,7 @@ function birdLoadQuestion() {
         var img = document.createElement('img');
         img.src = imgSrc;
         img.alt = bird.nameNo;
+        img.style.objectPosition = bird.imgPosition || 'center center';
         img.onerror = function() { this.src = fallback; };
         var span = document.createElement('span');
         span.textContent = bird.nameNo;
