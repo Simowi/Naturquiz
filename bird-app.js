@@ -214,6 +214,8 @@ function birdLoadQuestion() {
     if (shimmer) shimmer.style.display = 'none';
     if (soundWrap) {
       soundWrap.style.display = 'flex';
+      var descEl = document.getElementById('bird-sound-desc');
+      if (descEl) descEl.textContent = birdCurrentBird.soundDesc || '';
       var globalAudio = document.getElementById('bird-audio-global');
       if (globalAudio) {
         globalAudio.src = 'sounds/fugler/' + birdCurrentBird.folder + '.mp3';
@@ -437,7 +439,7 @@ function showBirdFeedback(correct, birdId, isTimeout = false) {
 
   const confEl = document.getElementById('bird-feedback-confusion');
   if (confEl) {
-    if (!correct && bird.confusesWith && bird.confusionTip) {
+    if (!correct && bird.confusesWith && bird.confusionTip && birdQuizType !== 'sound') {
       confEl.innerHTML = '⚠️ Mange forveksler denne med <strong>' + bird.confusesWith + '</strong>: ' + bird.confusionTip;
       confEl.style.display = 'block';
     } else {
