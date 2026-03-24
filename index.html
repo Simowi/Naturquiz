@@ -206,7 +206,7 @@
       <div class="bird-sound-wrap" id="bird-sound-wrap" style="display:none">
         <div class="sound-quiz-icon">🎵</div>
         <p class="sound-quiz-label">Hvilken fugl synger dette?</p>
-        <audio id="bird-audio" controls preload="auto" style="width:90%;margin-top:8px;"></audio>
+        <button class="bird-play-btn" id="bird-quiz-play-btn" onclick="toggleQuizAudio()">&#9654;</button>
       </div>
     </div>
     <div class="options-grid" id="bird-options-grid"></div>
@@ -220,7 +220,6 @@
       <div class="fish-card-reveal" id="bird-card-reveal">
         <div id="bird-feedback-sound-wrap" style="display:none;padding:16px;text-align:center;background:var(--surface2)">
           <p style="font-size:13px;color:var(--text2);margin-bottom:8px;font-weight:600">Fuglesang:</p>
-          <audio id="bird-feedback-audio" controls preload="auto" style="width:90%;max-width:320px;"></audio>
         </div>
         <img id="bird-feedback-img" src="" alt="" />
         <div class="fish-card-info">
@@ -299,6 +298,7 @@
       <div class="leaderboard-list" id="bird-leaderboard-list"></div>
     </div>
   </div>
+<audio id="bird-audio-global" preload="auto" style="display:none"></audio>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="fish-data.js"></script>
   <script src="bird-data.js"></script>
