@@ -238,7 +238,8 @@ function birdLoadQuestion() {
       };
       img.onerror = () => { img.src = 'images/fugler/' + birdCurrentBird.folder + '_1.jpg'; };
       img.src = birdCurrentImageFile;
-      img.style.objectPosition = birdCurrentBird.imgPosition || 'center center';
+      var _pos = (birdCurrentBird.imgPositions && birdCurrentBird.imgPositions[String(birdCurrentImageNum)]) || birdCurrentBird.imgPosition || 'center center';
+      img.style.objectPosition = _pos;
     }
   }
 
@@ -384,7 +385,8 @@ function showBirdFeedback(correct, birdId, isTimeout = false) {
   if (imgEl) {
     imgEl.style.display = 'block';
     imgEl.src = birdCurrentImageFile;
-    imgEl.style.objectPosition = birdCurrentBird.imgPosition || 'center center';
+    var _fbpos = (birdCurrentBird.imgPositions && birdCurrentBird.imgPositions[String(birdCurrentImageNum)]) || birdCurrentBird.imgPosition || 'center center';
+    imgEl.style.objectPosition = _fbpos;
   }
   var fbPlayBtn = document.getElementById('bird-feedback-play-btn');
   var globalAudio = document.getElementById('bird-audio-global');
@@ -616,7 +618,7 @@ function renderBirdGallery() {
            onclick="${discovered ? `openBirdModal('${bird.id}')` : ''}">
         <div class="gallery-card-inner">
           ${discovered
-            ? `<img src="images/fugler/${bird.folder}_${birdDiscoveredImages[bird.id] || 1}.jpg" alt="${bird.nameNo}" loading="lazy" style="object-position:${bird.imgPosition || 'center center'}" />`
+            ? `<img src="images/fugler/${bird.folder}_${birdDiscoveredImages[bird.id] || 1}.jpg" alt="${bird.nameNo}" loading="lazy" style="object-position:${(bird.imgPositions && bird.imgPositions[String(birdDiscoveredImages[bird.id] || 1)]) || bird.imgPosition || 'center center'}" />`
             : `<div class="undiscovered-icon">?</div>`
           }
           ${discovered ? `<div class="gallery-card-rarity rarity-tier-${rt.tier}-text">${rt.label}</div>` : ''}
