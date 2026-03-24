@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-import re, os
+import re, os, json
 from PIL import Image, ImageTk
 
 BASE = '/Users/sivert.moe.winther/Desktop/Vibes/Fiskequiz'
@@ -25,25 +25,55 @@ def load_birds():
         bird_id = parse_field('id', line)
         if not bird_id:
             continue
+        # Les imgPositions (per bilde) som JSON
+        pos_m = re.search(r'imgPositions:\s*(\{[^}]*\})', line)
+        if pos_m:
+            try:
+                positions = json.loads(pos_m.group(1).replace("'", '"'))
+            except:
+                positions = {}
+        else:
+            positions = {}
         birds.append({
             'id': bird_id,
             'folder': parse_field('folder', line),
             'nameNo': parse_field('nameNo', line),
-            'imgPosition': parse_field('imgPosition', line),
+            'imgPositions': positions,
             'maxImg': parse_int('maxImg', line),
         })
     print(f'Lastet {len(birds)} fugler')
     return birds, content
 
-def save_position(bird_id, pos, content):
-    pattern = r'(\{ id: "' + re.escape(bird_id) + r'"[^\n]+?)(,\s*imgPosition:\s*"[^"]*")?(,\s*maxImg:)'
-    def rep(m):
-        return m.group(1) + ', imgPosition: "' + pos + '"' + m.group(3)
-    new, n = re.subn(pattern, rep, content)
-    if n:
+def save_position_for_image(bird_id, img_num, pos, content):
+    # Finn linjen for denne fuglen
+    lines = content.split('\n')
+    new_lines = []
+    saved = False
+    for line in lines:
+        if '{ id:' in line and parse_field('id', line) == bird_id:
+            # Les eksisterende imgPositions
+            pos_m = re.search(r',\s*imgPositions:\s*(\{[^}]*\})', line)
+            if pos_m:
+                try:
+                    positions = json.loads(pos_m.group(1).replace("'", '"'))
+                except:
+                    positions = {}
+                positions[str(img_num)] = pos
+                new_pos_str = ', imgPositions: ' + json.dumps(positions)
+                line = line[:pos_m.start()] + new_pos_str + line[pos_m.end():]
+            else:
+                positions = {str(img_num): pos}
+                new_pos_str = ', imgPositions: ' + json.dumps(positions)
+                # Legg til før maxImg
+                line = re.sub(r'(,\s*maxImg:)', new_pos_str + r'\1', line)
+            saved = True
+        new_lines.append(line)
+    if saved:
+        new_content = '\n'.join(new_lines)
         with open(BIRD_DATA_FILE, 'w', encoding='utf-8') as f:
-            f.write(new)
-    return new, n > 0
+            f.write(new_content)
+        return new_content, True
+    return content, False
 
 class App(tk.Tk):
     def __init__(self):
@@ -83,9 +113,8 @@ class App(tk.Tk):
         self.lb.pack(fill=tk.BOTH, expand=True)
         sb.config(command=self.lb.yview)
         self.lb.bind('<<ListboxSelect>>', self._on_lb)
-        for i, b in enumerate(self.birds):
-            has = bool(b.get('imgPosition',''))
-            self.lb.insert(tk.END, ('OK ' if has else '   ') + b['nameNo'])
+        for b in self.birds:
+            self.lb.insert(tk.END, '   ' + b['nameNo'])
         self.after(50, self._color_list)
 
         cf = tk.Frame(self, bg='#1a1c18')
@@ -115,8 +144,8 @@ class App(tk.Tk):
         bot.pack_propagate(False)
         for txt, cmd in [('< Forrige fugl', lambda: self._nav_bird(-1)),
                           ('Neste fugl >', lambda: self._nav_bird(1)),
-                          ('Forrige bilde', lambda: self._nav_img(-1)),
-                          ('Neste bilde', lambda: self._nav_img(1))]:
+                          ('< Forrige bilde', lambda: self._nav_img(-1)),
+                          ('Neste bilde >', lambda: self._nav_img(1))]:
             tk.Button(bot, text=txt, command=cmd, font=('Helvetica',10),
                       bg='#2a2c28', fg='#ccc', relief=tk.FLAT,
                       padx=10, pady=5, cursor='hand2').pack(side=tk.LEFT, padx=4, pady=8)
@@ -145,7 +174,7 @@ class App(tk.Tk):
         self.pv_gall.pack(padx=10, pady=4, anchor='w')
         tk.Label(rf,
                  text='\nKlikk paa bildet for aa\nsette fokuspunkt\n\n'
-                      '<- -> Bytt fugl\nOpp Ned Bytt bilde\nEnter = Lagre',
+                      'Opp/Ned: Bytt fugl\nVenstre/Hoyre: Bytt bilde\nEnter = Lagre',
                  font=('Helvetica',10), bg='#1a1c18', fg='#555',
                  justify=tk.LEFT).pack(anchor='w', padx=10, pady=12)
         tk.Label(rf, text='Lagret posisjon:', font=('Helvetica',9),
@@ -156,20 +185,43 @@ class App(tk.Tk):
 
     def _color_list(self):
         for i, b in enumerate(self.birds):
-            has = bool(b.get('imgPosition',''))
-            self.lb.itemconfig(i, fg='#34c759' if has else '#ccc')
+            done = len(b.get('imgPositions', {}))
+            total = b['maxImg']
+            if done >= total:
+                color = '#34c759'
+                prefix = 'OK '
+            elif done > 0:
+                color = '#ff9500'
+                prefix = f'{done}/{total} '
+            else:
+                color = '#ccc'
+                prefix = '   '
+            self.lb.delete(i)
+            self.lb.insert(i, prefix + b['nameNo'])
+            self.lb.itemconfig(i, fg=color)
+        self.lb.selection_set(self.bi)
 
     def _init_load(self):
         if self.birds:
             self._load_bird(0)
-        else:
-            self.name_lbl.config(text='Ingen fugler funnet!')
 
     def _load_bird(self, i):
         self.bi = i
         self.ii = 0
+        self._load_img_position()
         b = self.birds[i]
-        pos = b.get('imgPosition', '')
+        self.name_lbl.config(text=b['nameNo'])
+        self.lb.selection_clear(0, tk.END)
+        self.lb.selection_set(i)
+        self.lb.see(i)
+        self._load_img()
+        self._update_prog()
+
+    def _load_img_position(self):
+        b = self.birds[self.bi]
+        img_num = str(self.ii + 1)
+        positions = b.get('imgPositions', {})
+        pos = positions.get(img_num, '')
         if pos and '%' in pos:
             parts = pos.replace('%','').split()
             try:
@@ -179,18 +231,13 @@ class App(tk.Tk):
                 self.fx, self.fy = 0.5, 0.3
         else:
             self.fx, self.fy = 0.5, 0.3
-        self.name_lbl.config(text=b['nameNo'])
         self.saved_lbl.config(text=pos or '(ingen)')
-        self.lb.selection_clear(0, tk.END)
-        self.lb.selection_set(i)
-        self.lb.see(i)
-        self._load_img()
-        self._update_prog()
 
     def _load_img(self):
         b = self.birds[self.bi]
         num = self.ii + 1
-        self.img_lbl.config(text=f'Bilde {num}/{b["maxImg"]}')
+        done = len(b.get('imgPositions', {}))
+        self.img_lbl.config(text=f'Bilde {num}/{b["maxImg"]}  ({done} lagret)')
         path = os.path.join(IMAGE_DIR, f'{b["folder"]}_{num}.jpg')
         if not os.path.exists(path):
             path = os.path.join(IMAGE_DIR, f'{b["folder"]}_1.jpg')
@@ -270,14 +317,19 @@ class App(tk.Tk):
 
     def _save(self):
         b = self.birds[self.bi]
+        img_num = self.ii + 1
         pos = f'{int(self.fx*100)}% {int(self.fy*100)}%'
-        self.content, ok = save_position(b['id'], pos, self.content)
+        self.content, ok = save_position_for_image(b['id'], img_num, pos, self.content)
         if ok:
-            b['imgPosition'] = pos
+            if 'imgPositions' not in b:
+                b['imgPositions'] = {}
+            b['imgPositions'][str(img_num)] = pos
             self.saved_lbl.config(text=pos)
-            self.save_lbl.config(text='Lagret!', fg='#34c759')
-            self._update_list()
+            self.save_lbl.config(text=f'Lagret bilde {img_num}!', fg='#34c759')
+            self._color_list()
             self._update_prog()
+            done = len(b.get('imgPositions', {}))
+            self.img_lbl.config(text=f'Bilde {img_num}/{b["maxImg"]}  ({done} lagret)')
             self.after(2000, lambda: self.save_lbl.config(text=''))
         else:
             self.save_lbl.config(text='FEIL', fg='#ff3b30')
@@ -292,6 +344,7 @@ class App(tk.Tk):
         ni = max(0, min(self.ii+d, b['maxImg']-1))
         if ni != self.ii:
             self.ii = ni
+            self._load_img_position()
             self._load_img()
 
     def _on_lb(self, e):
@@ -299,17 +352,14 @@ class App(tk.Tk):
         if sel and sel[0] != self.bi:
             self._load_bird(sel[0])
 
-    def _update_list(self):
-        for i, b in enumerate(self.birds):
-            has = bool(b.get('imgPosition',''))
-            self.lb.delete(i)
-            self.lb.insert(i, ('OK ' if has else '   ') + b['nameNo'])
-            self.lb.itemconfig(i, fg='#34c759' if has else '#ccc')
-        self.lb.selection_set(self.bi)
-
     def _update_prog(self):
-        done = sum(1 for b in self.birds if b.get('imgPosition',''))
-        self.prog.config(text=f'{done} / {len(self.birds)} har fokuspunkt')
+        total_done = sum(
+            1 for b in self.birds
+            for img_num in range(1, b['maxImg']+1)
+            if str(img_num) in b.get('imgPositions', {})
+        )
+        total_imgs = sum(b['maxImg'] for b in self.birds)
+        self.prog.config(text=f'{total_done} / {total_imgs} bilder har fokuspunkt')
 
 if __name__ == '__main__':
     app = App()
