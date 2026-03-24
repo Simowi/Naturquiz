@@ -401,12 +401,14 @@ function showBirdFeedback(correct, birdId, isTimeout = false) {
       globalAudio.currentTime = 0;
       globalAudio.play();
       globalAudio.onended = function() {
-        if (fbPlayBtn) fbPlayBtn.textContent = '▶';
+        var fbIcon = document.getElementById('bird-feedback-play-icon');
+        if (fbIcon) fbIcon.textContent = '▶';
       };
     }
     if (fbPlayBtn) {
       fbPlayBtn.style.display = 'inline-flex';
-      fbPlayBtn.textContent = '⏸';
+      var fbIcon = document.getElementById('bird-feedback-play-icon');
+      if (fbIcon) fbIcon.textContent = '⏸';
     }
   } else {
     if (fbPlayBtn) fbPlayBtn.style.display = 'none';
@@ -482,15 +484,15 @@ function toggleQuizAudio() {
 
 function toggleFeedbackAudio() {
   var audio = document.getElementById('bird-audio-global');
-  var btn = document.getElementById('bird-feedback-play-btn');
+  var icon = document.getElementById('bird-feedback-play-icon');
   if (!audio) return;
   if (audio.paused) {
     audio.currentTime = 0;
     audio.play();
-    if (btn) btn.textContent = '⏸';
+    if (icon) icon.textContent = '⏸';
   } else {
     audio.pause();
-    if (btn) btn.textContent = '▶';
+    if (icon) icon.textContent = '▶';
   }
 }
 
