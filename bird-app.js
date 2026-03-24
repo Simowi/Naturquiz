@@ -545,7 +545,14 @@ async function endBirdGame() {
   const mainNameInput = document.getElementById('player-name');
   const playerName = (hiddenNameInput && hiddenNameInput.value.trim()) || (mainNameInput && mainNameInput.value.trim()) || 'Anonym';
   try {
-    const birdTable = birdGameMode === 'sprint' ? 'leaderboard_birds' : 'leaderboard_birds_relaxed';
+    var birdTable;
+    if (birdQuizType === 'sound') {
+      birdTable = 'leaderboard_birds_sound';
+    } else if (birdGameMode === 'sprint') {
+      birdTable = 'leaderboard_birds';
+    } else {
+      birdTable = 'leaderboard_birds_relaxed';
+    }
     await supabaseClient.from(birdTable).insert([{ name: playerName, score: birdScore, week: getWeekKey() }]);
   } catch(e) { console.log('Leaderboard error:', e); }
 
@@ -651,7 +658,7 @@ async function loadBirdLeaderboard(tab = 'sprint') {
   if (!list) return;
   list.innerHTML = '<div style="text-align:center;padding:20px;color:#888">Laster...</div>';
 
-  const birdLbTable = tab === 'sprint' ? 'leaderboard_birds' : 'leaderboard_birds_relaxed';
+  const birdLbTable = tab === 'sound' ? 'leaderboard_birds_sound' : (tab === 'sprint' ? 'leaderboard_birds' : 'leaderboard_birds_relaxed');
   try {
     const { data, error } = await supabaseClient
       .from(birdLbTable)
@@ -679,9 +686,12 @@ function switchBirdLeaderboardTab(tab) {
   currentBirdLeaderboardTab = tab;
   document.getElementById('bird-tab-sprint').className = 'tab-btn' + (tab === 'sprint' ? ' tab-active' : '');
   document.getElementById('bird-tab-relaxed').className = 'tab-btn' + (tab === 'relaxed' ? ' tab-active' : '');
+  document.getElementById('bird-tab-sound').className = 'tab-btn' + (tab === 'sound' ? ' tab-active' : '');
   document.getElementById('bird-tab-collectors').className = 'tab-btn' + (tab === 'collectors' ? ' tab-active' : '');
   if (tab === 'collectors') {
     loadCollectorsLeaderboard('bird-leaderboard-list');
+  } else if (tab === 'sound') {
+    loadBirdLeaderboard('sound');
   } else {
     loadBirdLeaderboard(tab);
   }
