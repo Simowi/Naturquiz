@@ -379,24 +379,27 @@ function showBirdFeedback(correct, birdId, isTimeout = false) {
   if (titleEl) titleEl.textContent = correct ? 'Riktig!' : (isTimeout ? 'Tiden er ute!' : 'Beklager – det var feil!');
 
   const imgEl = document.getElementById('bird-feedback-img');
-  const fbSoundWrap = document.getElementById('bird-feedback-sound-wrap');
-  // Vis alltid bilde pa feedback-skjermen
   if (imgEl) {
     imgEl.style.display = 'block';
     imgEl.src = birdCurrentImageFile;
   }
-  // I lydmodus: vis ogsa lydspiller med pause-mulighet
+  var fbPlayBtn = document.getElementById('bird-feedback-play-btn');
+  var globalAudio = document.getElementById('bird-audio-global');
   if (birdQuizType === 'sound') {
-    if (fbSoundWrap) {
-      fbSoundWrap.style.display = 'block';
-      const fbAudio = document.getElementById('bird-feedback-audio');
-      if (fbAudio) {
-        fbAudio.src = 'sounds/fugler/' + birdCurrentBird.folder + '.mp3';
-        fbAudio.load();
-      }
+    if (globalAudio) {
+      globalAudio.loop = false;
+      globalAudio.currentTime = 0;
+      globalAudio.play();
+      globalAudio.onended = function() {
+        if (fbPlayBtn) fbPlayBtn.textContent = '▶';
+      };
+    }
+    if (fbPlayBtn) {
+      fbPlayBtn.style.display = 'inline-flex';
+      fbPlayBtn.textContent = '⏸';
     }
   } else {
-    if (fbSoundWrap) fbSoundWrap.style.display = 'none';
+    if (fbPlayBtn) fbPlayBtn.style.display = 'none';
   }
 
   const nameEl = document.getElementById('bird-feedback-name-no');
