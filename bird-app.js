@@ -238,6 +238,7 @@ function birdLoadQuestion() {
       };
       img.onerror = () => { img.src = 'images/fugler/' + birdCurrentBird.folder + '_1.jpg'; };
       img.src = birdCurrentImageFile;
+      img.style.objectPosition = birdCurrentBird.imgPosition || 'center center';
     }
   }
 
@@ -613,7 +614,7 @@ function renderBirdGallery() {
            onclick="${discovered ? `openBirdModal('${bird.id}')` : ''}">
         <div class="gallery-card-inner">
           ${discovered
-            ? `<img src="images/fugler/${bird.folder}_${birdDiscoveredImages[bird.id] || 1}.jpg" alt="${bird.nameNo}" loading="lazy" />`
+            ? `<img src="images/fugler/${bird.folder}_${birdDiscoveredImages[bird.id] || 1}.jpg" alt="${bird.nameNo}" loading="lazy" style="object-position:${bird.imgPosition || 'center center'}" />`
             : `<div class="undiscovered-icon">?</div>`
           }
           ${discovered ? `<div class="gallery-card-rarity rarity-tier-${rt.tier}-text">${rt.label}</div>` : ''}
