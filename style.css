@@ -1425,3 +1425,37 @@ html, body {
   z-index: 2;
 }
 .bird-play-btn:hover { background: #2e4d32; transform: scale(1.06); }
+
+/* ── Play-knapp stor og sentrert på spørsmålskort ──────── */
+.bird-play-btn-large {
+  position: static !important;
+  width: 64px !important;
+  height: 64px !important;
+  font-size: 26px !important;
+  margin: 8px auto 4px !important;
+  box-shadow: 0 6px 20px rgba(23,54,29,0.3) !important;
+}
+
+/* ── Fasit play-knapp med tekst ────────────────────────── */
+.feedback-play-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  padding: 5px 12px 5px 8px !important;
+  border-radius: var(--radius-full) !important;
+  border: none !important;
+  background: var(--primary) !important;
+  color: #fff !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  width: auto !important;
+  height: auto !important;
+  transition: background 0.15s !important;
+}
+.feedback-play-btn:hover { background: #2e4d32 !important; }
+.feedback-play-label {
+  font-family: "Manrope", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+}
