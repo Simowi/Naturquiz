@@ -555,6 +555,7 @@ async function endBirdGame() {
     } else {
       birdTable = 'leaderboard_birds_relaxed';
     }
+    if (playerName.toLowerCase() === 'test') { showBirdScreen('screen-bird-gameover'); return; }
     await supabaseClient.from(birdTable).insert([{ name: playerName, score: birdScore, week: getWeekKey() }]);
   } catch(e) { console.log('Leaderboard error:', e); }
 

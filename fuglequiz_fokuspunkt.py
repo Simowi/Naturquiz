@@ -83,9 +83,10 @@ class App(tk.Tk):
         self.lb.pack(fill=tk.BOTH, expand=True)
         sb.config(command=self.lb.yview)
         self.lb.bind('<<ListboxSelect>>', self._on_lb)
-        for b in self.birds:
+        for i, b in enumerate(self.birds):
             has = bool(b.get('imgPosition',''))
-            self.lb.insert(tk.END, ('checkmark ' if has else '  ') + b['nameNo'])
+            self.lb.insert(tk.END, ('OK ' if has else '   ') + b['nameNo'])
+        self.after(50, self._color_list)
 
         cf = tk.Frame(self, bg='#1a1c18')
         cf.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
@@ -152,6 +153,11 @@ class App(tk.Tk):
         self.saved_lbl = tk.Label(rf, text='(ingen)', font=('Helvetica',10,'bold'),
                                    bg='#1a1c18', fg='#c7ecc7')
         self.saved_lbl.pack(anchor='w', padx=10)
+
+    def _color_list(self):
+        for i, b in enumerate(self.birds):
+            has = bool(b.get('imgPosition',''))
+            self.lb.itemconfig(i, fg='#34c759' if has else '#ccc')
 
     def _init_load(self):
         if self.birds:

@@ -522,6 +522,7 @@ async function endGame() {
   // Save to Supabase BEFORE showing game over screen
   try {
     const fishTable = fishGameMode === 'sprint' ? 'leaderboard' : 'leaderboard_fish_relaxed';
+    if (playerName.toLowerCase() === 'test') { showScreen('screen-gameover'); return; }
     await supabaseClient.from(fishTable).insert({
       player_name: playerName,
       score: score,
